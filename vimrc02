@@ -1,0 +1,18 @@
+set autoindent
+set smartindent
+set showcmd
+set showmatch
+set smartcase
+set incsearch
+set hidden
+set ruler
+set noerrorbells
+set visualbell t_vb=
+set scrolloff=10
+set report=0
+set mouse=a
+set textwidth=80
+set formatoptions=tcrql
+set nu
+
+colorscheme evening
