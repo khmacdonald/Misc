@@ -1,0 +1,11 @@
+PROJ=complex_main
+
+CC=gcc
+
+OBJ=complex.o khm_common.o
+
+$(PROJ): $(OBJ)
+	$(CC) -g -o $(PROJ) $(PROJ).c $(OBJ) $ $(CFLAGS)
+
+clean: 
+	rm $(PROJ) $(OBJ)

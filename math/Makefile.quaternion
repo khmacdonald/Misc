@@ -1,0 +1,14 @@
+PROJ=quaternion_main
+
+CC=gcc
+
+OBJ=quaternion.o 
+
+CFLAGS=/Users/khmacdonald/code/common/khm_common.o -I /Users/khmacdonald/code/common -lm
+
+$(PROJ): $(OBJ)
+	$(CC) -g -o $(PROJ) $(PROJ).c $(OBJ) $ $(CFLAGS)
+
+clean: 
+	rm $(PROJ) $(OBJ)
+

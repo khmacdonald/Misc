@@ -1,0 +1,13 @@
+PROJ=brand_main
+
+CC=gcc
+
+OBJ=brand.o
+
+CFLAGS=-lm
+
+$(PROJ): $(OBJ)
+	$(CC) -g -o $(PROJ) $(PROJ).c $(OBJ) $ $(CFLAGS)
+
+clean: 
+	rm $(PROJ) $(OBJ)

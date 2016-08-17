@@ -1,0 +1,16 @@
+PROJ=main
+
+CC=gcc
+
+OBJ=phi.o phi_arrays.o
+#OBJ=least_squares.o khm_common.o 
+
+#CFLAGS=-I /Users/khmacdonald/code/common  -lm
+#CFLAGS=-I /Users/khmacdonald/code/common  
+
+$(PROJ): $(OBJ)
+	$(CC) -g -o $(PROJ) $(PROJ).c $(OBJ) $ $(CFLAGS)
+
+clean: 
+	rm $(PROJ) $(OBJ)
+
