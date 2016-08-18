@@ -144,7 +144,7 @@ uint32_t phi_comp_odd ( uint32_t n, int32_t idx )
         /* TODO - rewrite this portion.  Don't like this */
     /*
      * idx = find_next_index ( n, idx );
-     * k = get_power_of_prime_factor ( &m, n, idx ); /* Where n = m * p**k
+     * k = get_power_of_prime_factor ( &m, n, idx ); 
      * totnt = phi_power_prime ( small_primes[idx], k );
      * totnt *= phi_comp_odd( m, idx+1 );
      */
