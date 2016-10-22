@@ -13,5 +13,5 @@ $(PROJ): $(OBJ)
 	$(CC) -g -o $(BIN) $(PROJ).c $(OBJ) $ $(CFLAGS)
 
 clean: 
-	rm $(PROJ) $(OBJ) $(BIN)
+	rm $(OBJ) $(BIN)
 

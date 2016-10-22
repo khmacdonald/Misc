@@ -1,5 +1,5 @@
 BIN=main
-PROJ=p0027_quad_primes
+PROJ=p0035_circular_prime
 
 CC=gcc
 
@@ -13,5 +13,6 @@ $(PROJ): $(OBJ)
 	$(CC) -g -o $(BIN) $(PROJ).c $(OBJ) $ $(CFLAGS)
 
 clean: 
-	rm $(PROJ) $(OBJ) $(BIN)
+	rm $(OBJ) $(BIN)
+
 
