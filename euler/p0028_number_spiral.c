@@ -45,14 +45,14 @@ int32_t print_corners ( int32_t n )
     printf("1\n");
     while ( c<n2 )
     {
-        printf("%5d -> ",idx);
+        //printf("%5d -> ",idx);
         for ( m=0; m<4; m++ )
         {
             c += idx;
             sum += c;
-            printf("%5d ",c);
+            //printf("%5d ",c);
         }
-        printf("\n");
+        //printf("\n");
         idx += 2;
     }
     printf("sum = %d\n",sum);
