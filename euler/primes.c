@@ -5,9 +5,9 @@
 #include "primes.h"
 
 
-uint32_t gcd ( uint32_t a, uint32_t b )
+pr_t gcd ( pr_t a, pr_t b )
 {
-    uint32_t c;
+    pr_t c;
     
     /* Euclidean Algorithm */
     while ( b!=0 )
@@ -20,21 +20,7 @@ uint32_t gcd ( uint32_t a, uint32_t b )
     return c;
 }
 
-uint32_t lg_int_sqrt ( uint32_t x )
-{
-    int32_t lz = __builtin_clz(x);
-    int32_t sq, sq2;
-    int32_t loc = 0, interval = (32-lz)/2;
-
-    sq = (1<<interval);
-    sq2 = sq*sq;
-    printf("%d -> %d, %d\n",x,sq,sq2);
-    printf("%08x -> %08x, %08x\n",x,sq,sq2);
-
-    return sq;
-}
-
-uint32_t int_sqrt ( uint32_t n )
+pr_t int_sqrt ( pr_t n )
 {
     int32_t idx = SQUARE_SZ;
     int32_t u=idx,l=0,tmp;
@@ -92,10 +78,10 @@ END:
     return ret;
 }
 
-uint32_t is_prime ( uint32_t x )
+pr_t is_prime ( pr_t x )
 {
-    uint32_t ret = 0;
-    uint32_t sq = 0, k, p;
+    pr_t ret = 0;
+    pr_t sq = 0, k, p;
 
     if ( x<PRIME_SIZE )
     {
