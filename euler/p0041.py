@@ -24,6 +24,8 @@ def sieve ( n ):
             while m < isp_len:
                 isp[m] = 0
                 m = m+k
+    global g_isp
+    global g_plist
     g_isp = isp
     g_plist = plist
     return True
