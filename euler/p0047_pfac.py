@@ -9,11 +9,14 @@ ac = len(av)
 
 g_sieve = []
 
-def is_good( f1, f2, f3 ):
+def is_good( f1, f2, f3, f4 ):
+    if len(f1)!=4 or len(f2)!=4 or len(f3)!=4 or len(f3)!=4:
+        return False
     S1 = set(f1) & set(f2)
     S2 = set(f1) & set(f3)
     S3 = set(f2) & set(f3)
-    if len(S1)>0 or len(S2)>0 or len(S3)>0:
+    S4 = set(f3) & set(f4)
+    if len(S1)>0 or len(S2)>0 or len(S3)>0 or len(S4)>0:
         return False
     else:
         return True
@@ -61,9 +64,42 @@ def test():
 
 def main ():
     # 490 = 2*3*5*7
-    pass
+    f1 = factor(490)
+    f2 = factor(491)
+    f3 = factor(492)
+    f4 = factor(493)
+    for k in range(494,1000000):
+        f1 = f2
+        f2 = f3
+        f3 = f4
+        f4 = factor(k)
+        if len(f4)!=4:
+            continue
+        if is_good(f1,f2,f3,f4):
+            print(k-3,k-2,k-1,k)
+            return
 
 if __name__=='__main__':
     sieve(100000)    
-    test()
+    main()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
