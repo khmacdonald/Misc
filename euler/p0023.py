@@ -43,7 +43,7 @@ def get_divisors ( n, isp, plist, mx ):
         if isp[n]:
             return [(n,1)]
     sq = math.floor(math.sqrt(n))
-    f = []
+    f = [1]
     m = n
     for p in plist:
         if p>sq:
@@ -63,44 +63,49 @@ def get_divisors ( n, isp, plist, mx ):
     return f
 
 def test():
-    isp, plist = sieve ( 100 )
-    d = get_divisors(24,isp,plist,100)
+    y = 12
+    mx = 100
+    isp, plist = sieve ( mx )
+    d = get_divisors(y,isp,plist,mx)
+    s = sum(d)
     dstr = ' '.join(str(x) for x in d)
-    print("%d -> %s" % (24,dstr))
+    print("%d -> %s - %d" % (y,dstr,s))
 
 def get_abundant():
-    mx = 28123
+    mx = 28130
     #mx = 100
     isp, plist = sieve(mx)    
     abundant = []
+    is_abundant = [0] * mx
     for k in range(4,mx):
         d = get_divisors(k,isp,plist,mx)
         if len(d)>1:
             sm = sum(d)
             if sm>k:
-                dstr = ' '.join(str(x) for x in d)
+                #dstr = ' '.join(str(x) for x in d)
                 #print("k=%d, sm=%d, divisors=%s" % (k,sm,dstr))
                 abundant.append(k)
-    return abundant
+                is_abundant[k] = 1
+    return abundant, is_abundant
 
-def is_sum ( k, abundant ):
+def is_sum ( k, abundant, is_abundant ):
     for a in abundant:
         if a>=k:
             break
         d = k-a
-        if d in abundant:
+        if 1==is_abundant[d]:
             return True
     return False
 
 def main ( ):
     mx = 28123
     print("Getting abundant")
-    abundant = get_abundant()
+    abundant, is_abundant = get_abundant()
     sm = 0
     print("Starting")
     for k in range(1,mx):
         sys.stdout.write("%d\r" % k)
-        if is_sum(k,abundant):
+        if not is_sum(k,abundant,is_abundant):
             sm = sm + k
     print("")
     print(sm)
@@ -113,6 +118,7 @@ def proj ( ):
         main()
 
 if __name__=='__main__':
+    #test()
     main()
 
 
