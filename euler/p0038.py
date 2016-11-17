@@ -11,94 +11,69 @@ from primes import sieve
 av = sys.argv
 ac = len(av)
 
-perm4 = [
-    [3,2,1,0],
-    [3,2,0,1],
-    [3,1,2,0],
-    [3,1,0,2],
-    [3,0,2,1],
-    [3,0,1,2], # 6
-    [2,3,1,0],
-    [2,3,0,1],
-    [2,1,3,0],
-    [2,1,0,3],
-    [2,0,3,1],
-    [2,0,1,3], # 12
-    [1,3,2,0],
-    [1,3,0,2],
-    [1,2,3,0],
-    [1,2,0,3],
-    [1,0,3,2],
-    [1,0,2,3], # 18
-    [0,3,2,1],
-    [0,3,1,2],
-    [0,2,3,1],
-    [0,2,1,3],
-    [0,1,3,2],
-    [0,1,2,3]  # 24
-]
+def is_pan ( n ):
+    dig = [1,1,1,1,1,1,1,1,1,1]
+    while n:
+        d = n % 10
+        if 0==d:
+            return False
+        n = n / 10
+        if 0==dig[d]:
+            return False
+        dig[d] = 0
+    return True
 
-def get_dig ( p ):
-    d = []
-    d.append(p%10)
-    p = p / 10
-    d.append(p%10)
-    p = p / 10
-    d.append(p%10)
-    p = p / 10
-    d.append(p%10)
-    return d
+def conc ( n, k ):
+    m = n
+    xstr = ''
+    for x in range(1,k+1):
+        xstr = '%s%s' % (xstr,n)
+        n = n+m
+    y = int(xstr)
+    return y
 
-def perms ( p, sv ):
-    global perm4
-    d = get_dig(p)
-    cnt = 0
-    pm = []
-    for perm in perm4:
-        w,x,y,z = perm
-        ptest = d[w]*1000 + d[x]*100 + d[y]*10 + d[z]
-        if ptest in sv.plist:
-            pm.append(ptest)
-    return pm
-
-def write_primes ( sv ):
-    fname = "p0049_prime_list.txt"
+def proj():
+    mx = 9876543211
+    mn = 1234567890
+    x = True
+    mmx = 1
+    fname = "p0038_out.txt"
     fd = open(fname,"w")
-
-    for k in range(len(sv.plist)):
-        fd.write("%6d " % sv.plist[k])
-        if 0==((k+1)%8):
-            fd.write("\n")
-
-    fd.close()
-
-def proj ( ):
-    s = sieve(10000)
-    #write_primes(s)
-    cnt = 0
-    mn_list = []
-    for p in s.plist:
-        if p<1000:
+    for n in range(1,1000000):
+        if not is_pan(n):
             continue
-        if p>10000:
-            break
-        pm = perms(p,s)
-        if 3==len(pm) and pm[0]>1000 and pm[1]>1000 and pm[2]>1000:
-            pm.sort()
-            if pm not in mn_list:
-                mn_list.append(pm)
-    for pm in mn_list:
-        d1 = pm[1]-pm[0]
-        d2 = pm[2]-pm[1]
-        print("%d %d %d : %6d %6d" % (pm[0],pm[1],pm[2],d1,d2))
+        for k in range(1,10):
+            y = conc(n,k)
+            if n==9 and k==5:
+                print(n,k,y)
+            if n==9327:
+                print(n,k,y)
+            if y > mx:
+                break
+            if is_pan(y):
+                if y>mmx:
+                    mmx = y
+                    fd.write("MAX n = %5d, k = %5d, y = %d\n" % (n,k,y))
+
+    print(mmx)
+    fd.close()
+    return
+        
 
 def test ( ):
-    x = 1234
+    n = 12345
     if 2==ac:
-        x = int(av[1])
-    perms(x)
+        n = int(av[1])
+    if is_pan(n):
+        print("%d is pandigital" % n)
+    else:
+        print("%d is not pandigital" % n)
+
+def test01 ( ):
+    y = conc(9,5)
+    print(y)
 
 if __name__=='__main__':
     proj()
-    #test()
+    #test01()
 

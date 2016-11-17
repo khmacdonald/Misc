@@ -39,7 +39,7 @@ class sieve ( object ):
         plist = self.plist
 
         if n<len(isp):
-            if isp[n]:
+            if 1==isp[n]:
                 return True
             else:
                 return False
