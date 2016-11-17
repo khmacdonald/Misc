@@ -1,0 +1,19 @@
+BIN=main
+PROJ=p0146
+
+CC=gcc
+
+OBJ=primes.o prime_arrays.o
+#OBJ=least_squares.o khm_common.o 
+
+#CFLAGS=-I /Users/khmacdonald/code/common  -lm
+#CFLAGS=-I /Users/khmacdonald/code/common  
+
+$(PROJ): $(OBJ)
+	$(CC) -g -o $(BIN) $(PROJ).c $(OBJ) $ $(CFLAGS)
+
+clean: 
+	rm $(OBJ) $(BIN)
+
+
+
