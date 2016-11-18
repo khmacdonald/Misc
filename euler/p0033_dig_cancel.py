@@ -7,25 +7,12 @@ import sys
 av = sys.argv
 ac = len(av)
 
-
 def gcd ( a, b ):
     while b:
         t = a%b
         a = b
         b = t
     return a
-    
-def reduce_frac ( n, d ):
-    a = gcd(n,d)
-    return n/a, d/a
-
-def get_dig ( n ):
-    ones = n%10
-    tens = n/10
-    return tens, ones
-
-def check_nums ( num, den ):
-    return False
     
 def proj2():
     '''
@@ -72,11 +59,12 @@ def proj ( ):
         for den in range(num+1,dmx):
             d, nm, dn = common_dig(num,den)
             if d:
-                if nm*den==dn*num:
+                # Check the cross product, which is equivalent to 
+                # num/den = nm/dn
+                if nm*den==dn*num: 
                     print("    %d/%d -> %d/%d" % (num,den,nm,dn))
-                    rn,rd = reduced(num,den)
-                    main_num = main_num * rn
-                    main_den = main_den * rd
+                    main_num = main_num * num
+                    main_den = main_den * den
     mn, md = reduced(main_num,main_den)
     print("%d/%d" % (mn,md))
 
