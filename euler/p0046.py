@@ -55,113 +55,41 @@ def is_prime ( n ):
             return False
     return True
 
-
-def get_ndic ( n ):
-    d = {}
-    for k in range(1,n+1):
-        dic[k] = 1
-    return dic
-
-def is_npan( number, n ):
-    if n>9:
-        n = 9
-    dd = {}
-    for k in range(1,n+1):
-        dd[k] = 1
-    while number:
-        d = number % 10;
-        number = number / 10
-        if d not in dd:
+def goldbach ( n ):
+    global g_plist
+    nsq = int(math.sqrt(n))
+    for p in g_plist:
+        if p>=n:
             return False
-        if dd[d]==0:
-            return False
-        dd[d] = 0
-    return True
+        b = (n-p)/2
+        sq = math.sqrt(b)
+        if sq.is_integer():
+            return True
 
-def next_lex ( a ):
-    i = len(a)-2
-    while not ( i<0 or a[i] < a[i+1]):
-        i = i-1
-    if i<0:
-        return False
-
-    j = len(a)-1
-    while not ( a[j]>a[i] ):
-        j = j-1
-    tmp = a[i]
-    a[i] = a[j]
-    a[j] = tmp
-    a[i+1:] = reversed(a[i+1:])
-    return True
-
-
-def list_2_num ( a ):
-    num = 0
-    for d in a:
-        num = num * 10 + d
-    return num
-
-
-def factorial ( n ):
-    if n<0:
-        return 0
-    if n==1:
-        return 1
-    return n*factorial(n-1)
-
-def is_pan ( n, m ):
-    dig = [1]*(m+1)
-    while n:
-        d = n % 10
-        if d>(m):
-            return False
-        if 0==d:
-            return False
-        n = n / 10
-        if dig[d]==0:
-            return False
-        dig[d] = 0
-    return True
-
-def is_pan_prime ( n ):
-    if not is_pan(n,len(str(n))):
-        return False
-    if is_prime(n):
-        return True
     return False
-    
 
 def proj():
-    n = 987654321
-    n = 87654321
-    mx = int(math.ceil(math.sqrt(n)))
-    sieve(mx)
-    found = False
-    print("    Starting at %d" % n)
-    while n:
-        sys.stdout.write("Testing %d\r" % n)
-        if 0==(n%1000000):
-            print("")
-        if is_pan_prime(n):
-            found = True
-            pp = n
-            break
-        n = n-2
-    
-    print("")
-    if not found:
-        print("Did not find a pandigital prime")
-    else:
-        print("%d is the largest pandigial prime" % pp)
+    pass
 
 def test():
-    sieve(100)
-    n = 4231
-    if is_pan_prime(n):
-        print("%d is a pandigital prime" % n)
+    mx = 10000
+    sieve(mx)
+    n = 1
+    not_found = True
+    pp = 0
+    while n<mx and not_found:
+        sys.stdout.write("Testing %d\r" % n)
+        if not is_prime(n):
+            if not goldbach(n):
+                not_found = False
+                pp = n
+        n = n+2
+    print("")
+    if not_found:
+        print("Nothing found")
     else:
-        print("%d is not a pandigital prime" % n)
+        print("Found %d" % pp)
 
 if __name__=='__main__':
-    proj()
-    #test()
+    #proj()
+    test()
