@@ -57,9 +57,30 @@ def perms ( p, sv ):
     for perm in perm4:
         w,x,y,z = perm
         ptest = d[w]*1000 + d[x]*100 + d[y]*10 + d[z]
-        if ptest in sv.plist:
+        if ptest in sv.plist and ptest not in pm:
             pm.append(ptest)
     return pm
+
+def get_dig_cnt ( n ):
+    d = {}
+    while n:
+        dig = n%10
+        n   = n/10
+        if dig in d:
+            d[dig] = d[dig]+1
+        else:
+            d[dig] = 1
+    return d
+
+def is_perm ( m, n ):
+    dm = get_dig_cnt(m)
+    dn = get_dig_cnt(n)
+    for d in dm:
+        if d not in dn:
+            return False
+        if dm[d]!=dn[d]:
+            return False
+    return True
 
 def write_primes ( sv ):
     fname = "p0049_prime_list.txt"
@@ -72,7 +93,23 @@ def write_primes ( sv ):
 
     fd.close()
 
-def proj ( ):
+def proj():
+    s = sieve(10000)
+    not_found = True
+    for p in s.plist:
+        if p<1400:
+            continue
+        if p>=10000:
+            break
+        b, c = p+3330, p+6660
+        if s.is_prime(b) and s.is_prime(c) and is_perm(p,b) and is_perm(p,c):
+            not_found = False
+            print("%d %d %d" % (p,b,c))
+            print("    %d%d%d" % (p,b,c))
+    if not_found:
+        print("Nothing found")
+    
+def proj_old ( ):
     s = sieve(10000)
     #write_primes(s)
     cnt = 0
@@ -82,21 +119,25 @@ def proj ( ):
             continue
         if p>10000:
             break
+        strp = str(p)
+        if '0' in strp:
+            continue
         pm = perms(p,s)
-        if 3==len(pm) and pm[0]>1000 and pm[1]>1000 and pm[2]>1000:
+        if 3==len(pm):
             pm.sort()
-            if pm not in mn_list:
-                mn_list.append(pm)
+            pm_str = str(pm[0]) + str(pm[1]) + str(pm[2])
+            if pm_str not in mn_list:
+                mn_list.append(pm_str)
     for pm in mn_list:
-        d1 = pm[1]-pm[0]
-        d2 = pm[2]-pm[1]
-        print("%d %d %d : %6d %6d" % (pm[0],pm[1],pm[2],d1,d2))
+        x1, x2, x3 = (int(pm[:4]),int(pm[4:8]),int(pm[8:]))
+        d1 = x2 - x1
+        d2 = x3 - x2
+        if d1==d2:
+            print("    This one:")
+        print("%d %d %d, %4d %4d" % (x1, x2, x3, d1, d2))
 
 def test ( ):
-    x = 1234
-    if 2==ac:
-        x = int(av[1])
-    perms(x)
+    pass
 
 if __name__=='__main__':
     proj()
