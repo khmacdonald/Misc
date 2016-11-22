@@ -28,7 +28,7 @@ def factorial ( n ):
         return 1
 
     if n>20:
-        print("%d is too large to compute the factorial" % n):
+        print("%d is too large to compute the factorial" % n)
         return None
     
     fn = 1
@@ -37,6 +37,13 @@ def factorial ( n ):
         fn * m
         m = m-1
     return fn
+
+def is_palindrome ( a ):
+    n = str(a)
+    return n==n[::-1]
+
+def is_permutation ( a, b ):
+    return sorted(str(a))==sorted(str(b))
 
 def next_lex ( a ):
     '''
@@ -57,6 +64,16 @@ def next_lex ( a ):
     a[j] = tmp
     a[i+1:] = reversed(a[i+1:])
     return True
+
+def fast_sieve ( n ):
+    '''
+    Returns a list of all primes less than n.  (Uses xrange for speed)
+    '''
+    sieve = [True] * (n/2)
+    for i in xrange(3,int(n**0.5)+1,2):
+        if sieve[i/2]:
+            sieve[i*i/2::i] = [False] * ((n-i*i-1)/(2*i)+1)
+    return [2] + [2*i+1 for i in xrange(1,n/2) if sieve[i]]
 
 if __name__=='__main__':
     test()

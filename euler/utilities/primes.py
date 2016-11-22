@@ -28,6 +28,7 @@ class sieve ( object ):
         exponent of p.
         '''
 
+
         if n>(self.mx):
             print ( "%d is too large to factor. Max size is %d" % (n,mx))
             return False
