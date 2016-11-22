@@ -123,9 +123,10 @@ class sieve ( object ):
         tnt = 1
         for a in f:
             p, e = a
-            tnt = tnt * p
+            el = p-1
             if e>1:
-                tnt = tnt * (p**(e-1))
+                el = el * (p**(e-1))
+            tnt = tnt * el
         return tnt
 
 
