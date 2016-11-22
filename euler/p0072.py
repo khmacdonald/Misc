@@ -25,73 +25,32 @@ def test():
 
 def proj():
     sv = sieve(10000)
-    nmn = 2
-    nmx = 10**7
-    mn = nmx
-
-    found = False
     print("Starting")
-    for n in range(nmn,nmx+1):
+    start = 2
+    end = 10**6
+    tot = 0
+    for n in range(start, end+1):
         sys.stdout.write("n = %d\r" % n)
         totn = sv.totient(n)
-        if not my_euler.is_permutation(n,totn):
-            continue
-        ratio = float(n)/float(sv.totient(n))
-        if ratio<mn:
-            found = True
-            mn = ratio
-            minn = n
+        tot = tot + totn
         
     print("")
-    if found:
-        print("%d results in ratio %f" % (minn,mn))
-    else:
-        print("Nothing found")
-
-def proj2 ():
-    '''
-    Way faster
-    '''
-    num = 10**7
-    numsq = int(1.2*math.ceil(math.sqrt(num)))
-    print("numsq = %d" % numsq)
-    primes = my_euler.fast_sieve(numsq)
-    k = 0
-    minn = num
-    mn = num
-    found = False
-    answer = 8319823
-    print("Max Prime = %d" % (primes[len(primes)-1]))
-    for p1 in primes:
-        k = k+1
-        for p2 in primes[k:]:
-            n = p1*p2
-            if n==answer:
-                print("")
-                print("Here n = %d" % n)
-            if n>num:
-                break
-            sys.stdout.write("n = %d\r" % n)
-            phi = (p1-1)*(p2-1)
-            ratio = n/float(phi)
-            if n==answer:
-                print("")
-                print("phi(%d) = %d, %f" % (n,phi,ratio))
-            if my_euler.is_permutation(n,phi):
-                if ratio<mn:
-                    found = True
-                    mn = ratio
-                    minn = n
-        
-    print("")
-    if found:
-        print("%d results in ratio %f" % (minn,mn))
-    else:
-        print("Nothing found")
-
-    print("  Answer should be %d" % answer)
+    print("tot = %d" % (tot))
 
 
+def proj2():
+    L = 10**6
+    phi = range(L+1)
+    for n in range(2,L+1):
+        if phi[n]==n: # This means n is prime
+            for k in range(n,L+1,n):
+                '''
+                Need to think about this line to figure out why
+                this ends up with the correct answer.
+                '''
+                phi[k] -= phi[k]//n
+    sm = sum(phi)-1
+    print("Answer is %d" % sm)
 
 if __name__=='__main__':
     proj2()
