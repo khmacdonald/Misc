@@ -7,15 +7,42 @@ import sys
 av = sys.argv
 ac = len(av)
 
+def gcd ( a, b ):
+    '''
+    Returns the greatest common divisor of a and b, using the
+    Euclidean algorithm.
+    '''
+    while b:
+        t = a%b
+        a = b
+        b = t
+    return a
+
 def factorial ( n ):
+    '''
+    Returns n!
+    '''
     if n<0:
         return 0
     elif 1==n or 0==n:
         return 1
-    else:
-        return n * factorial(n-1)
+
+    if n>20:
+        print("%d is too large to compute the factorial" % n):
+        return None
+    
+    fn = 1
+    m = n
+    while m>1:
+        fn * m
+        m = m-1
+    return fn
 
 def next_lex ( a ):
+    '''
+    Returns the next lexicographic permutation.
+    I copied this from somewhere.
+    '''
     i = len(a)-2
     while not ( i<0 or a[i] < a[i+1]):
         i = i-1
@@ -31,7 +58,17 @@ def next_lex ( a ):
     a[i+1:] = reversed(a[i+1:])
     return True
 
-
-
 if __name__=='__main__':
     test()
+
+
+
+
+
+
+
+
+
+
+
+
