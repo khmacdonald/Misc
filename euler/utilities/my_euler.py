@@ -7,6 +7,14 @@ import sys
 av = sys.argv
 ac = len(av)
 
+def factorial ( n ):
+    if n<0:
+        return 0
+    elif 1==n or 0==n:
+        return 1
+    else:
+        return n * factorial(n-1)
+
 def next_lex ( a ):
     i = len(a)-2
     while not ( i<0 or a[i] < a[i+1]):
