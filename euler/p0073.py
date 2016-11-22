@@ -12,48 +12,39 @@ av = sys.argv
 ac = len(av)
 
 def test():
-    a = 2445
-    b = 5424
-    if 3==ac:
-        a = int(av[1])
-        b = int(av[2])
-    
-    if my_euler.is_permutation(a,b):
-        print("%d is a permutation of %d" % (a,b))
-    else:
-        print("%d is not a permutation of %d" % (a,b))
+    pass
+
+def print_project_answer( pnum, answer ):
+    project_output = "Project Euler %d answer is" % pnum
+    print("")
+    print("%s = %d" % (project_output,answer))
+
+def frac_num ( den ):
+    ans = 0
+    num = den//2
+    if num/float(den)==1.0/2.0:
+        num = num-1
+    for x in range(num,0,-1):
+        if float(x)/den<=1/float(3):
+            break
+        if 1==my_euler.gcd(x,den):
+            #print(" %d/%d " % (x,den))
+            ans = ans+1
+        num = num-1
+    return ans
 
 def proj():
-    sv = sieve(10000)
-    print("Starting")
-    start = 2
-    end = 10**6
-    tot = 0
-    for n in range(start, end+1):
-        sys.stdout.write("n = %d\r" % n)
-        totn = sv.totient(n)
-        tot = tot + totn
-        
-    print("")
-    print("tot = %d" % (tot))
+    ans = 0
+    upper = 12000
+    for d in range(2,upper+1):
+        sys.stdout.write("d = %d\r" % d)
+        ans = ans + frac_num(d)
+    
+    print_project_answer(73,ans)
 
-
-def proj2():
-    L = 10**6
-    phi = range(L+1)
-    for n in range(2,L+1):
-        if phi[n]==n: # This means n is prime
-            for k in range(n,L+1,n):
-                '''
-                Need to think about this line to figure out why
-                this ends up with the correct answer.
-                '''
-                phi[k] -= phi[k]//n
-    sm = sum(phi)-1
-    print("Answer is %d" % sm)
 
 if __name__=='__main__':
-    proj2()
+    proj()
     #test()
 
 
