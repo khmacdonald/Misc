@@ -44,19 +44,19 @@ def proj():
     fname = "p099_base_exp.txt"
     fd = open(fname,"r")
 
-    line = fd.readline()
-    b1, e1 = get_b_e(line)
-    x1 = compute(b1,e1)
-
-    line = fd.readline()
-    b2, e2 = get_b_e(line)
-    x2 = compute(b1,e1)
-    if x1>x2:
-        print("%d**%d > %d**%d" % (b1,e1,b2,e2))
-    else:
-        print("%d**%d < %d**%d" % (b1,e1,b2,e2))
-
+    mx = 0
+    lines = fd.readlines()
     fd.close()
+    for k in range(len(lines)):
+        b, e = get_b_e(lines[k])
+        x = compute(b,e)
+        if x>mx:
+            ml = k
+            mx = x
+            mb = b
+            me = e
+
+    ans = ml+1
     print_project_answer(92,ans)
 
 
