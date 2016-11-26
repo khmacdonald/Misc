@@ -7,16 +7,12 @@ import sys
 av = sys.argv
 ac = len(av)
 
-def gcd ( a, b ):
-    '''
-    Returns the greatest common divisor of a and b, using the
-    Euclidean algorithm.
-    '''
-    while b:
-        t = a%b
-        a = b
-        b = t
-    return a
+def count_dig ( n ):
+    cnt = 0
+    while n :
+        cnt = cnt + 1
+        n = n/10
+    return cnt
 
 def factorial ( n ):
     '''
@@ -38,9 +34,61 @@ def factorial ( n ):
         m = m-1
     return fn
 
+def fast_sieve ( n ):
+    '''
+    Returns a list of all primes less than n.  (Uses xrange for speed)
+    '''
+    sieve = [True] * (n/2)
+    for i in xrange(3,int(n**0.5)+1,2):
+        if sieve[i/2]:
+            sieve[i*i/2::i] = [False] * ((n-i*i-1)/(2*i)+1)
+    return [2] + [2*i+1 for i in xrange(1,n/2) if sieve[i]]
+
+def fibonacci ( n ):
+    if 1==n or 1==2:
+        return 1
+    x1, x2 = 1, 1
+    for k in range(3,n+1):
+        xn = x1+x2
+        x1 = x2
+        x2 = xn
+    return x2
+
+def fibonacci_exp ( n ):
+    s5 = math.sqrt(5)
+    x = (1 + s5)/2.0
+    y = 1-x
+    fn = (x**n - y**n) / s5
+    return fn
+
+def gcd ( a, b ):
+    '''
+    Returns the greatest common divisor of a and b, using the
+    Euclidean algorithm.
+    '''
+    while b:
+        t = a%b
+        a = b
+        b = t
+    return a
+
 def is_palindrome ( a ):
     n = str(a)
     return n==n[::-1]
+
+def is_pandigital ( n, m=9 ):
+    dig = [1]*(m+1)
+    while n:
+        d = n % 10
+        if d>(m):
+            return False
+        if 0==d:
+            return False
+        n = n / 10
+        if dig[d]==0:
+            return False
+        dig[d] = 0
+    return True
 
 def is_permutation ( a, b ):
     return sorted(str(a))==sorted(str(b))
@@ -65,15 +113,9 @@ def next_lex ( a ):
     a[i+1:] = reversed(a[i+1:])
     return True
 
-def fast_sieve ( n ):
-    '''
-    Returns a list of all primes less than n.  (Uses xrange for speed)
-    '''
-    sieve = [True] * (n/2)
-    for i in xrange(3,int(n**0.5)+1,2):
-        if sieve[i/2]:
-            sieve[i*i/2::i] = [False] * ((n-i*i-1)/(2*i)+1)
-    return [2] + [2*i+1 for i in xrange(1,n/2) if sieve[i]]
+def reduce_frac ( a, b ):
+    d = gcd(a,b)
+    return a/d, b/d
 
 if __name__=='__main__':
     test()
