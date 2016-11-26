@@ -18,8 +18,8 @@ void test ( int32_t argc, char * argv[] );
 
 int32_t main ( int32_t argc, char * argv[] )
 {
-    //proj();
-    test(argc,argv);
+    proj();
+    //test(argc,argv);
 
     return 0;
 }
@@ -75,8 +75,26 @@ int32_t check ( pr_t x )
     return ret;
 }
 
+
 void proj ( void )
 {
+    int32_t pnum = 146;
+    pr_t mil = 1000000;
+    //pr_t mx = 150*mil;
+    pr_t mx = mil;
+    pr_t sum = 0,x;
+
+    for ( x=10; x<mx; ++x )
+    {
+        printf("[%d] x = %llu, sum = %llu\r",__LINE__,x,sum);
+        if ( check(x) )
+        {
+            sum += x;
+        }
+    }
+
+    printf("\nProject %d answer is %llu\n",pnum,sum);
+
     return;
 }
 

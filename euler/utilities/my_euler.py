@@ -117,6 +117,28 @@ def reduce_frac ( a, b ):
     d = gcd(a,b)
     return a/d, b/d
 
+def sum_fac ( n ):
+    s = 1
+    t = sqrt(n)
+    for i in range(2, int(t)+1):
+        if n % i == 0: 
+            s += i + n/i
+    if t == int(t): 
+        s -= t    #correct s if t is a perfect square
+    return s
+
+def sum_fac_sq ( n ):
+    s = 1
+    t = sqrt(n)
+    for i in range(2, int(t)+1):
+        if n % i == 0: 
+            f2 = n/i
+            s += (i*i + f2*f2)
+    if t == int(t): 
+        s -= (t*t)    #correct s if t is a perfect square
+    return s
+
+
 if __name__=='__main__':
     test()
 
