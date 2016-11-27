@@ -113,6 +113,24 @@ def next_lex ( a ):
     a[i+1:] = reversed(a[i+1:])
     return True
 
+def prime_factor ( n, sv ):
+    sqn = int(math.sqrt(n))
+    fac = []
+    m = n
+    for p in sv:
+        if p>sqn:
+            break
+        if 0==(m%p):
+            m = m/p
+            e = 1
+            while 0==(m%p):
+                e = e+1
+                m = m/p
+            fac.append((p,e))
+    if m>1:
+        fac.append((m,1))
+    return fac
+
 def reduce_frac ( a, b ):
     d = gcd(a,b)
     return a/d, b/d
