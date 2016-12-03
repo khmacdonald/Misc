@@ -21,6 +21,10 @@ def print_project_answer( pnum, answer ):
     print("%s = %d" % (project_output,answer))
 
 def slow_factor ( n ):
+    '''
+    Factors n.  Works only for relatively small n, i.e., NOT 10**15.
+    Used this to compare to smaller numbers, like 10**5.
+    '''
     t = math.sqrt(n)
     f = [1]
     for k in range(2, int(t)+1):
@@ -36,6 +40,9 @@ def slow_factor ( n ):
     print("Factors of %d is %s" % (n,fstr))
 
 def fast_factor ( mx2, mx5 ):
+    '''
+    Know ahead of time that n = (2**mx2) * (5**mx5)
+    '''
     two = 1
     five = 1
     n = (2**mx2)*(5**mx5)
@@ -58,29 +65,32 @@ def fast_factor ( mx2, mx5 ):
 
 
 def fast_sig2 ( mx2, mx5 ):
+    '''
+    Computes sig2 of n = (2**mx2) * (5**mx5)
+    '''
     mod = 10**9
     sig2 = 1
     c = 1
     for k in range(1,mx2+1):
         c = c*2
-        sig2 = ((sig2+c*c) % mod)
+        sig2 = ((sig2+c*c) % mod) # Sum all powers of 2 squared
     c = 1
     for k in range(1,mx5+1):
         c = c*5
-        sig2 = ((sig2+c*c) % mod)
+        sig2 = ((sig2+c*c) % mod) # Sum all powers of 5 squared
     two = 1
     for k in range(mx2):
         two = two*2
         five = 1
         for m in range(mx5):
             five = five*5
-            y = two*five
-            sig2 = ((sig2+y*y) % mod)
+            y = two*five # Compute next factor of n
+            sig2 = ((sig2+y*y) % mod) # Add the square of that factor and modulo 10**9
     #print("Fast sig2 = %d" % sig2)
     return sig2
 
 def proj():
-    pnum = 146
+    pnum = 401
     answer = 0
 
     # 10**15 has prime factorization (2**15)*(5**15)

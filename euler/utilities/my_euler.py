@@ -72,6 +72,12 @@ def gcd ( a, b ):
         b = t
     return a
 
+def hep_nu ( n ):
+    return n * ( 5 * n - 3 ) / 2
+
+def hex_num ( n ):
+    return n * (n+1) / 2
+
 def is_palindrome ( a ):
     n = str(a)
     return n==n[::-1]
@@ -113,6 +119,12 @@ def next_lex ( a ):
     a[i+1:] = reversed(a[i+1:])
     return True
 
+def oct_num ( n ):
+    return n * ( 3 * n - 2 )
+
+def pen_num ( n ):
+    return n * ( 3 * n - 1 ) / 2
+
 def prime_factor ( n, sv ):
     sqn = int(math.sqrt(n))
     fac = []
@@ -135,6 +147,9 @@ def reduce_frac ( a, b ):
     d = gcd(a,b)
     return a/d, b/d
 
+def sqr_num ( n ):
+    return n * n 
+
 def sum_fac ( n ):
     s = 1
     t = sqrt(n)
@@ -156,6 +171,8 @@ def sum_fac_sq ( n ):
         s -= (t*t)    #correct s if t is a perfect square
     return s
 
+def tri_num ( n ):
+    return n * ( n + 1 ) / 2
 
 if __name__=='__main__':
     test()
