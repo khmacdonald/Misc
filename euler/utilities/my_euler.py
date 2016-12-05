@@ -72,11 +72,12 @@ def gcd ( a, b ):
         b = t
     return a
 
-def hep_nu ( n ):
+def hep_num ( n ):
     return n * ( 5 * n - 3 ) / 2
 
 def hex_num ( n ):
-    return n * (n+1) / 2
+    hx = n * ( 2 * n - 1 ) 
+    return hx
 
 def is_palindrome ( a ):
     n = str(a)

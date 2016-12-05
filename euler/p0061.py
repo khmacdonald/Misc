@@ -21,21 +21,35 @@ def print_project_answer( pnum, answer ):
     print("%s = %d" % (project_output,answer))
 
 def proj():
-    pnum = 401
+    pnum = 61
     answer = 0
-    mx = 10**6
-
-    print("This is a poorly designed problem")
-    sv = my_euler.fast_sieve(mx)
 
     print("")
     print_project_answer(pnum,answer)
     
 
 def test():
-    pass
+    rng = range(1,7)
+
+    tri = [ my_euler.tri_num(k) for k in rng ]
+    print(tri)
+
+    sqr = [ my_euler.sqr_num(k) for k in rng ]
+    print(sqr)
+
+    pen = [ my_euler.pen_num(k) for k in rng ]
+    print(pen)
+
+    hx = [ my_euler.hex_num(k) for k in rng ]
+    print(hx)
+
+    hep = [ my_euler.hep_num(k) for k in rng ]
+    print(hep)
+
+    ot = [ my_euler.oct_num(k) for k in rng ]
+    print(ot)
 
 if __name__=='__main__':
-    #test()
-    proj()
+    test()
+    #proj()
 
