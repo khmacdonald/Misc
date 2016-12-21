@@ -7,11 +7,6 @@ import sys
 av = sys.argv
 ac = len(av)
 
-def rational_add ( a, b ):
-    x = a[0] * b[1] + a[1] * b[0]   # Compute the numerator
-    y = a[1] * b[1]                 # Compute the denominator
-    return [x,y]
-
 def count_dig ( n ):
     cnt = 0
     while n :
