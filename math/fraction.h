@@ -13,8 +13,14 @@ struct _fraction
 typedef struct _fraction frac_t[1];
 
 /*
+ * c = a + b
  */
 int32_t add_fraction ( frac_t c, frac_t a, frac_t b );
+
+/*
+ * c = a - b
+ */
+int32_t sub_fraction ( frac_t c, frac_t a, frac_t b );
 
 /*
  */

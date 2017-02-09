@@ -2,18 +2,45 @@
 
 int32_t add_fraction ( frac_t c, frac_t a, frac_t b )
 {
-    int32_t ret = 0;
-    uint64_t gcd,lcm,d,n;
+    int32_t ret = 0,d;
 
-    lcm = flcm(&gcd,a->den,b->den);
+    if ( a->den==b->den )
+    {
+        c->den = a->den;
+        c->num = a->num + b->num;
+    }
+    else
+    {
+        c->den = a->den * b->den;
+        c->num = a->num * b->den + a->den * b->num;
+    }
+    d = gcd(c->num,c->den);
+    if ( d>1 )
+    {
+        c->num /= d;
+        c->den /= d;
+    }
 
     return ret;
+}
+
+int32_t sub_fraction ( frac_t c, frac_t a, frac_t b )
+{
+    frac_t d;
+    d->num = -b->num;
+    d->den = b->den;
+
+    return add_fraction(c,a,d);
 }
 
 uint64_t fxgcd ( uint64_t a, uint64_t b, uint64_t * x, uint64_t * y )
 {
     uint64_t c,xx,yy;
 
+    /*
+     * Will have to add the xx and yy to the algorithm to complete
+     * the Euclidean algorithm.
+     */
     while ( 0!=b )
     {
         c = a%b;
@@ -67,3 +94,29 @@ void print_fraction_2_file  ( FILE * fd,  frac_t f )
 
     return;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

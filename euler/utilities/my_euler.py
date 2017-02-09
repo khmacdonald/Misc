@@ -30,7 +30,7 @@ def factorial ( n ):
     fn = 1
     m = n
     while m>1:
-        fn * m
+        fn = fn * m
         m = m-1
     return fn
 
