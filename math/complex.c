@@ -42,6 +42,25 @@ void complex_conj ( complex_t c, complex_t a )
     return;
 }
 
+khm_error_t complex_inv ( complex_t c, complex_t a )
+{
+    khm_error_t ret = khm_success;
+    double m = 0;
+
+    if ( (0==a->x) && (0==a->y) )
+    {
+        ret = khm_badargs;
+        goto END;
+    }
+
+    m = complex_abs(a);
+    c->x = a->x/m;
+    c->y = -a->y/m;
+
+END:
+    return ret;
+}
+
 double complex_abs_sq ( complex_t a )
 {
     return a->x*a->x + a->y*a->y;
@@ -72,12 +91,31 @@ khm_error_t complex_mul ( complex_t mul, complex_t a, complex_t b )
     khm_error_t ret=khm_success;
     complex_t m;
 
+    /* Using m allows for mul to be a or b */
     complex_init(m,0.0,0.0);
     m->x = a->x*b->x - a->y*b->y;
     m->y = a->x*b->y + a->y*b->x;
 
     complex_copy(mul,m);
 
+    return ret;
+}
+
+khm_error_t complex_div ( complex_t div, complex_t a, complex_t b )
+{
+    khm_error_t ret=khm_success;
+    complex_t d;
+
+    if ( (0==b->x) && (0==b->y) )
+    {
+        ret = khm_badargs;
+        goto END;
+    }
+
+    /* */
+
+
+END:
     return ret;
 }
 

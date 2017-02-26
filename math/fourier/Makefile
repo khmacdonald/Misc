@@ -1,15 +1,13 @@
-PROJ=lsmain
+PROJ=main
 
 CC=gcc
 
-OBJ=common.o 
-#OBJ=least_squares.o khm_common.o 
+OBJ=src/common.o src/fourier.o
 
-CFLAGS=-I /Users/khmacdonald/code/common  -lm
+CFLAGS=-I include
 
-#	$(CC) -g -o $(PROJ) $(PROJ).c $(OBJ) $ $(CFLAGS)
 $(PROJ): $(OBJ)
-	$(CC) -c src/fourier.c -I include
+	$(CC) -g -o bin/$(PROJ) main/$(PROJ).c $(OBJ) $ $(CFLAGS)
 
 clean: 
 	rm $(PROJ) $(OBJ)
