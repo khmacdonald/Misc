@@ -10,6 +10,8 @@
 
 static const int MAXPENDING = 5; /* Maximum outstanding connection requests */
 
+void HandleTCPClient ( int clntSocket );
+
 int main ( int argc, char * argv[] )
 {
     in_port_t servPort = atoi(argv[1]); /* First arg: local port */
@@ -74,6 +76,45 @@ int main ( int argc, char * argv[] )
 
     return 0;
 }
+
+void HandleTCPClient ( int clntSocket )
+{
+    ssize_t numBytesRcvd, numBytesSent;
+    char buffer[BUFSIZE];
+
+    /* Receive from client */
+    numBytesRcvd = recv(clntSock,buffer,BUFSIZE,0);
+    if ( numBytesRcvd < 0 )
+    {
+        DieWithSystemMessage("recv() failed");
+    }
+
+    /* Send received string and receive again until end of stream */
+    while ( numBytesRecv > 0 )
+    {
+        /* Echo back to client */
+        numBytesSent = send(clntSocket,buffer,numBytesRcvd,0);
+        if ( numBytesSent <  0 )
+        {
+            DieWithSystemMessage("send() failed");
+        }
+        else if ( numBytesSent != numBytesRcvd )
+        {
+            DieWithUserMessage("send()","sent unexpected number of bytes");
+        }
+
+        /* See if there is more date to receive */
+        numBytesRcvd = recv(clntSocket,buffer,BUFSIZE,0);
+        if ( numBytesRcvd < 0 )
+        {
+            DieWithSystemMessage("recv() failed");
+        }
+    } /* while */
+
+    close(clntSocket); /* Close client socket */
+}
+
+
 
 
 
