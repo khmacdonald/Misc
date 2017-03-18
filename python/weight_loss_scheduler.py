@@ -8,15 +8,18 @@ import sys
 argv = sys.argv
 argc = len(argv)
 
-def build_chunk_string ( start_weight, monthly_weight, end_weight, loss_time, stable_time, dt ):
+def build_chunk_string ( start_weight, monthly_weight, 
+                         end_weight, loss_time, stable_time, dt ):
     #date_fmt = "%Y-%m"
     date_fmt = "%b %Y"
     date_str = dt.strftime(date_fmt)
     loss = start_weight - end_weight
     mloss = loss / float(loss_time)   # monthly weight loss
     wloss = mloss / 4.0          # weekly weight loss
-    oline = '%s - Starting at %d lbs, lose %d lbs' % (date_str,start_weight,loss)
-    oline = '%s\n          %3.1f per month, %3.1f per week' % (oline,mloss,wloss)
+    oline = '%s - Starting at %d lbs, lose %d lbs' % \
+             (date_str,start_weight,loss)
+    oline = '%s\n          %3.1f per month, %3.1f per week' % \
+             (oline,mloss,wloss)
 
     for mweight in monthly_weight:
         dt = dt + relativedelta(months=1)
@@ -26,7 +29,8 @@ def build_chunk_string ( start_weight, monthly_weight, end_weight, loss_time, st
     dt = dt + relativedelta(months=1)
     date_str = dt.strftime(date_fmt)
     oline = "%s\n    %s %d lbs" % (oline,date_str,end_weight)
-    oline = "%s\n    Hold at %d lbs for %d months" % (oline,end_weight,stable_time)
+    oline = "%s\n    Hold at %d lbs for %d months" % \
+             (oline,end_weight,stable_time)
     dt = dt + relativedelta(months=stable_time)
 
     return oline, dt
@@ -57,11 +61,22 @@ def schedule( start_weight, end_weight, loss_time, stable_time ):
         if current_end_weight < end_weight:
             current_end_weight = end_weight
 
-        loss, monthly_weight = compute_loss_months(current_weight,current_end_weight,loss_time)
-        chunk, dt = build_chunk_string(current_weight,monthly_weight,current_end_weight,loss_time,stable_time,dt)
-        print("%s\n\n" % chunk)
+        # Compute the losses in this time period
+        loss, monthly_weight = compute_loss_months(current_weight,\
+                                                   current_end_weight,\
+                                                   loss_time)
 
+        # Create the output string for this weight loss chunk
+        chunk, dt = build_chunk_string(current_weight,\
+                                       monthly_weight,\
+                                       current_end_weight,\
+                                       loss_time,stable_time,dt)
+        print("%s\n\n" % chunk)
+        
+        # The new current weight is the old end weight
         current_weight = current_end_weight
+
+        # End while
         
     return True
 
@@ -74,12 +89,9 @@ def main ( ):
     end_weight   = int(argv[2]) # end weight
     loss_time    = int(argv[3]) # weight loss time frame chunk (months)
     stable_time  = int(argv[4]) # weight stabilization time frame chunk (months)
+
+    # Compute and print the weight loss schedule
     schedule(start_weight,end_weight,loss_time,stable_time)
-
-def test ( ):
-    ret = compute_loss(356,320)
-    print(ret)
-
 
 if __name__=="__main__":
     main()
