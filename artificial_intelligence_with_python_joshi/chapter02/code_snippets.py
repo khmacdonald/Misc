@@ -24,4 +24,8 @@ print("\nAFTER: ")
 print("Mean =", data_scaled.mean(axis=0))
 print("Std deviation =", data_scaled.std(axis=0))
 
+# Min Max Scaling
+data_scaler_minmax = preprocessing.MinMaxScaler(feature_range=(0,1))
+data_scaled_minmax = data_scaler_minmax.fit_transform(input_data)
+print("\nMin max scaled data: \n",data_scaled_minmax)
 
