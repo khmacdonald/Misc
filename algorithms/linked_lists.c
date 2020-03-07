@@ -140,6 +140,27 @@ pSLINKED_NODE sll_remove_node (
     return remove_non_root_node(list,key);;
 }
 
+void destroy_list ( pSLINKED_LIST * p_list, void (*destroy_node)(pSLINKED_NODE) ) {
+    pSLINKED_NODE cnode = NULL, next = NULL;
+    pSLINKED_LIST list = NULL;;
+
+    if ( NULL==p_list ) {
+        return;
+    }
+    list = *p_list;
+    *p_list = NULL;
+    if ( NULL==list ) {
+        return;
+    }
+    cnode = list->root;
+    free(list);
+    while ( cnode ) {
+        next = cnode->next;
+        destroy_node(cnode);
+        cnode = next;
+    }
+}
+
 
 
 
