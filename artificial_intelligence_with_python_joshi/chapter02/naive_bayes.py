@@ -13,7 +13,11 @@ from utilities import visualize_classifier
 input_file = 'data_multivar_nb.txt'
 
 # Load data from input file
-data = np.loadtxt(input_file, delimiter=',')
+data = np.loadtxt(input_file, delimiter=',') # Processes CSV
+
+# data is 400 rows of three columns
+# x is the first two columns
+# y is the last column
 X, y = data[:, :-1], data[:, -1] 
 
 # Create Naive Bayes classifier 
@@ -43,7 +47,7 @@ classifier_new.fit(X_train, y_train)
 y_test_pred = classifier_new.predict(X_test)
 
 # compute accuracy of the classifier
-accuracy = 100.0 * (y_test == y_test_pred).sum() / X_test.shape[0]
+accuracy = 100.0 * (y_test == y_test_pred).sum() / X_test.shape[0] # An average 
 print("Accuracy of the new classifier =", round(accuracy, 2), "%")
 
 # Visualize the performance of the classifier
