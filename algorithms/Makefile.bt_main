@@ -1,0 +1,13 @@
+PROJ=bt_main
+
+CC=gcc
+
+OBJ=binary_search_tree.o
+
+CFLAGS=
+
+$(PROJ): $(OBJ)
+	$(CC) -g -o $(PROJ) $(PROJ).c $(OBJ) $ $(CFLAGS)
+
+clean: 
+	rm $(PROJ) $(OBJ)
