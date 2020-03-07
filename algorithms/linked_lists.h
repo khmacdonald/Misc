@@ -33,4 +33,8 @@ int sll_insert_node ( pSLINKED_LIST list, pSLINKED_NODE node );
  */
 pSLINKED_NODE sll_find_node ( pSLINKED_LIST list, void * key );
 
+/**
+ */
+pSLINKED_NODE sll_remove_node ( int * destroy_list,pSLINKED_LIST list, void * key );
+
 #endif

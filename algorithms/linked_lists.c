@@ -95,6 +95,50 @@ pSLINKED_NODE sll_find_node ( pSLINKED_LIST list, void * key ) {
     return NULL;
 }
 
+static pSLINKED_NODE remove_root ( int * destroy_list, pSLINKED_LIST list ) {
+    pSLINKED_NODE cnode = list->root;
+    if ( NULL==list->root->next ) {
+        /* list has only size of 1, so removing it empties it. */ 
+        *destroy_list = 1; 
+    } else {
+        /* Remove the root */
+        list->root = cnode->next;
+    }
+    return cnode;
+}
+
+static pSLINKED_NODE remove_non_root_node ( pSLINKED_LIST list, void * key ) {
+    pSLINKED_NODE cnode = list->root;
+
+    while ( NULL!=cnode ) {
+        if ( NULL==cnode->next ) {
+            break;  /* No node found */
+        }
+        if ( LL_SAME==list->cmp(cnode->next->key,key) ) {
+            cnode->next = cnode->next->next;
+            return cnode->next;
+        }
+    }
+
+    return NULL;
+}
+
+pSLINKED_NODE sll_remove_node ( 
+        int * destroy_list,
+        pSLINKED_LIST list, 
+        void * key ) {
+
+    if ( NULL==list || NULL==destroy_list) {
+        return NULL;
+    }
+
+    *destroy_list = 0;
+    if ( LL_SAME==list->cmp(list->root->key,key) ) {
+        return remove_root(destroy_list,list);
+    }
+
+    return remove_non_root_node(list,key);;
+}
 
 
 
