@@ -1,0 +1,13 @@
+PROJ=ll_main
+
+CC=gcc
+
+OBJ=linked_lists.o
+
+CFLAGS=
+
+$(PROJ): $(OBJ)
+	$(CC) -g -o $(PROJ) $(PROJ).c $(OBJ) $ $(CFLAGS)
+
+clean: 
+	rm $(PROJ) $(OBJ)
