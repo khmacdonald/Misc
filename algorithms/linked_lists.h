@@ -95,6 +95,67 @@ pSLINKED_NODE sll_find_node ( pSLINKED_LIST list, void * key );
  */
 pSLINKED_NODE sll_remove_node ( int * destroy_list,pSLINKED_LIST list, void * key );
 
-void destroy_list ( pSLINKED_LIST * list, void (*destroy_node)(pSLINKED_NODE) );
+/**
+ * @brief Destroys all nodes in a list, then destroys the list.
+ * 
+ * @param list[in] - Pointer to a pointer of a linked list.
+ * @param destroy_node[in] - function needed to destroy the value/data of a node.
+ */
+void sll_destroy_list ( pSLINKED_LIST * list, void (*destroy_node)(pSLINKED_NODE) );
+
+int sll_push ( pSLINKED_LIST list, void * value );
+pSLINKED_NODE sll_pop( pSLINKED_LIST list, int * destroy_list);
+
+/**
+ * @brief Doubly (implemented as circularly) linked list node.
+ */
+struct doubly_linked_node {
+    ll_cmp_t cmp;                       /**< Node key comparison function */
+    void * key;                         /**< Node key */
+    void * value;                       /**< Node value */
+    struct doubly_linked_node * flink;  /**< Next node */
+    struct doubly_linked_node * blink;  /**< Next node */
+};
+
+/**
+ * @brief Doubly linked list data structure, which is just a node.
+ */
+typedef struct doubly_linked_node * pDLINKED_NODE;
+
+/**
+ *
+ */
+pDLINKED_NODE dll_node_new ( void * key, void * value, ll_cmp_t cmp );
+
+/**
+ *
+ */
+int dll_insert ( pDLINKED_NODE root, void * key, void * value );
+
 
 #endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

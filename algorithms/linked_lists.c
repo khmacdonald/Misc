@@ -140,7 +140,7 @@ pSLINKED_NODE sll_remove_node (
     return remove_non_root_node(list,key);;
 }
 
-void destroy_list ( pSLINKED_LIST * p_list, void (*destroy_node)(pSLINKED_NODE) ) {
+void sll_destroy_list ( pSLINKED_LIST * p_list, void (*destroy_node)(pSLINKED_NODE) ) {
     pSLINKED_NODE cnode = NULL, next = NULL;
     pSLINKED_LIST list = NULL;;
 
@@ -156,11 +156,114 @@ void destroy_list ( pSLINKED_LIST * p_list, void (*destroy_node)(pSLINKED_NODE) 
     free(list);
     while ( cnode ) {
         next = cnode->next;
-        destroy_node(cnode);
+        destroy_node(cnode->value);
+        free(cnode);
         cnode = next;
     }
 }
 
+int sll_push ( pSLINKED_LIST list, void * value ) {
+    pSLINKED_NODE new_root = NULL, old_root;
+    if ( NULL==list ) {
+        return 1;
+    }
+
+    old_root = list->root;
+    new_root = calloc(1,sizeof(*new_root));
+    if ( NULL==new_root ) {
+        return 2;
+    }
+
+    new_root->value = value;
+
+    new_root->next = old_root;
+    list->root = new_root;
+
+    return 0;
+}
+
+pSLINKED_NODE sll_pop( pSLINKED_LIST list, int * destroy_list) {
+    pSLINKED_NODE node = NULL;
+    if ( NULL==list ) {
+        return NULL;
+    }
+
+    *destroy_list = 0;
+    node =  list->root;
+    if ( NULL==node->next ) {
+        *destroy_list = 1;
+    }
+    list->root = node->next;
+
+    return node;
+}
+
+pDLINKED_NODE dll_node_new ( void * key, void * value, ll_cmp_t cmp ) {
+    pDLINKED_NODE node = calloc(1,sizeof(*node)); 
+    if ( NULL==node ) {
+        return NULL;
+    }
+
+    node->key   = key;
+    node->value = value;
+    node->cmp   = cmp;
+
+    /* Initialize as a circular linked list with only one element. */
+    node->flink = node;
+    node->blink = node;
+
+    return node;
+}
+
+static int dll_insert_next ( pDLINKED_NODE cnode, pDLINKED_NODE node ) {
+    /* 
+     * Adjust the new node forward and backward link to put the
+     * new node between the cnode and the next node.
+     */
+    node->blink = cnode;
+    node->flink = cnode->flink;
+
+    /* 
+     * Adjust the forward link of the current node and the backwards
+     * link of the next node.
+     */
+    cnode->flink->blink = node;
+    cnode->flink = node;
+
+    return 0;
+}
+
+int dll_insert_node ( pDLINKED_NODE cnode, pDLINKED_NODE node ) {
+    pDLINKED_NODE last = cnode->flink;
+
+    /* TODO */
+
+    return 0;
+}
+
+int dll_insert ( pDLINKED_NODE root, void * key, void * value ) {
+    pDLINKED_NODE node = NULL;
+
+    if ( NULL==root ) {
+        return 1;
+    }
+
+    node = dll_node_new(key,value,root->cmp);
+    if ( NULL==node ) {
+        return 2;
+    }
+    /* 
+     * Insert just after root if:
+     * 1. Size of list is 1.
+     * 2. No comparison function.
+     */
+    if ( root->flink==root->blink ||            
+         NULL==root->cmp ) {
+        return dll_insert_next(root,node);
+    }
+
+    return dll_insert_node(root,node);;
+}
 
 
 
