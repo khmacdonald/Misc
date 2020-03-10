@@ -1,3 +1,6 @@
+/*
+https://www.hackerrank.com/challenges/ctci-ransom-note/problem
+ */
 #include <assert.h>
 #include <limits.h>
 #include <math.h>
@@ -11,14 +14,15 @@
 char* readline();
 char** split_string(char*);
 
-#define print_here printf("[%d] Here\n",__LINE__)
+
+// ---------------------------------
+//          Below is my code
+// ---------------------------------
+#include "../common/print_statements.h"
 
 // Complete the checkMagazine function below.
+// Works, but is too slow for the last two problems.
 void checkMagazine_old(int magazine_count, char** magazine, int note_count, char** note) {
-
-    // ---------------------------------
-    //          Below is my code
-    // ---------------------------------
 #define DSZ (1<<15)
 #define WSZ 8
     struct word_count {
@@ -44,7 +48,6 @@ void checkMagazine_old(int magazine_count, char** magazine, int note_count, char
             }
         }
     }
-    //printf("[%d] used = %d\n",__LINE__,used);
 
     for ( k=0; k<note_count; ++k ) {
         found = 0;
@@ -66,10 +69,6 @@ void checkMagazine_old(int magazine_count, char** magazine, int note_count, char
         }
     }
     printf("Yes\n");
-
-    // ---------------------------------
-    //          Above is my code
-    // ---------------------------------
 
 }
 
@@ -139,28 +138,16 @@ void build_dictionary ( struct list * list, int wcnt, char ** words ) {
 int is_in_dictionary ( struct list * list, char * word ) {
     struct node * node = NULL;
 
-    printf("[%s]\n",word);
-    if ( NULL==list->root ) {
-        printf("    No root\n");
-        return 0;
-    }
-
-    for ( node = list->root; NULL!=node->next; node = node->next ) {
-        printf("    (%s) - ",node->word);
-        if ( 0==strncmp(word,node->word,WDSZ) )
-        {
-            if ( 0==node->count ) {
-                printf(" none left\n");   
+    for ( node = list->root; NULL!=node; node = node->next ) {
+        if ( 0==strncmp(word,node->word,WDSZ) ) {
+            if ( node->count ) {
+                node->count--;
+                return 1;
+            } else {
                 return 0;
             }
-            printf(" found\n");
-            node->count--;
-            return 1;
-        } else {
-            printf(" not found\n");
-        }
-    }
-
+        } // if strncmp
+    } // for 
     return 0;
 }
 
@@ -184,36 +171,45 @@ void checkMagazine(int magazine_count, char** magazine, int note_count, char** n
 }
 // ------------------------------------------------------------------
 
+// ---------------------------------
+//          Above is my code
+// ---------------------------------
+
 void test01() {
     char * magazine[6] = { "give", "me", "one", "grand", "today", "night" };
     char * note[4] = { "give", "one", "grand", "today" };
+
+    //dbg_print("magazine - give me one grand today night");
+    //dbg_print("note     - give one grand today\n");
 
     checkMagazine(6,magazine,4,note);
 }
 
 void test02() {
-    //line1 = "6 5"
     char * magazine[6] = {"two", "times", "three", "is", "not", "four" };
     char * note[5] = { "two", "times", "two", "is", "four" };
+
     checkMagazine(6,magazine,5,note);
 }
 
 void test03() {
-    //line1 = "7 4"
     char * magazine[7] = { "ive", "got", "a", "lovely", "bunch", "of", "coconuts" };
     char * note[4] = { "ive", "got", "some", "coconuts" };
+
     checkMagazine(7,magazine,4,note);
 }
 
 int main() {
     printf("   Test 1\n");
     test01();
+#if 1
     printf("--------------------------\n");
     printf("   Test 2\n");
     test02();
     printf("--------------------------\n");
     printf("   Test 3\n");
     test03();
+#endif
 
     return 0;
 }
