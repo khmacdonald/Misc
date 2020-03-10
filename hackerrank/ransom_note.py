@@ -53,7 +53,7 @@ def checkMagazine ( magazine, note ) :
 def test1 ( ) :
     line1 = "6 4"
     line2 = "give me one grand today night"
-    line3 = "give me one grand today"
+    line3 = "give one grand today"
     return line1, line2, line3
 
 def test2 ( ) :
