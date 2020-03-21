@@ -76,59 +76,40 @@ int count_words ( char * text ) {
     return wcnt;
 }
 
-void get_sentences ( struct paragraph * para, char * ptext ) {
-    int k;
-    int sidx,pidx=0;
-    int scnt=para->sentence_count;
-    int plen=strlen(ptext);
-    char sent[1024];
-
-
-    dbg_print("paragraph: (%d) %s\n",para->sentence_count,ptext);
-    for ( k=0; k<scnt; ++k ) {
-        sidx = 0;
-        memset(sent,0,1024);
-        while ( pidx<plen && '.'!=ptext[pidx] ) {
-            sent[sidx++] = ptext[pidx];
-            pidx++;
-        }
-        pidx++;
-        dbg_print("Sentence: %s\n",sent);
-    }
-
-    return;
-}
-
-void get_paragraphs ( struct document * doc, char * text ) {
-    int k,m,pcnt = doc->paragraph_count,scnt;
-    char para[1024];
-    int pidx = 0, tidx = 0, dlen = strlen(text);;
-    struct paragraph * cpara;
-
-    for ( k=0; k<pcnt && tidx<dlen; ++k ) {
-        pidx = 0;
-        memset(para,0,1024);
-        while ( tidx<dlen && '\n'!=text[tidx] ) {
-            para[pidx++] = text[tidx];
-            tidx++;
-        }
-        scnt = count_sentences(para);
-        doc->data[k].sentence_count = scnt;
-        doc->data[k].data = (struct sentence*)calloc(scnt,sizeof(struct sentence));
-        cpara = &doc->data[k];
-        get_sentences(cpara,para);
-        tidx++;
-    }
-
+void get_paragraph ( struct paragraph * para, char * text ) {
+    dbg_print("Paragraph = %s\n",text);
     return;
 }
 
 struct document get_document(char* text) {
-    struct document ret;
+    int k,                      /* Dummy */
+        pidx,tidx=0,            /* Paragraph and text index */
+        tlen=strlen(text);;     /* Text length */
+    char para[1024];            /* Paragraph text */
+    struct document ret;        /* Document */
 
+    /* Get the number of paragraphs in a document */
     ret.paragraph_count = count_paragraphs(text);
+
+    /* Allocate the number of paragraphs for the document */
     ret.data = (struct paragraph*)calloc(2,sizeof(*(ret.data)));
-    get_paragraphs(&ret,text);
+
+    /* Get the paragraphs */
+    for ( k=0; k<ret.paragraph_count; ++k ) {
+        memset(para,0,1024);
+        pidx=0;
+        while ( 1 ) {
+            /* A return or end of text indicates the end of a paragraph */
+            if ( '\n'==text[tidx] || tlen-1==tidx ) {
+                get_paragraph(&ret.data[k],para);
+            }
+            para[pidx++] = text[tidx];
+            tidx++;
+            if ( tlen==tidx ) {
+                break;
+            }
+        }
+    }
 
     return ret;
 }
@@ -218,7 +199,7 @@ int main() {
         ilines = cline;
     }
 
-    struct document Doc = get_document(doc);
+    struct document Doc = get_document(doc); /* Process a document */
 
     printf("\n --------------- \n\n");
     /* Process queries */
