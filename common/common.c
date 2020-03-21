@@ -39,36 +39,10 @@ void c_print_array_int ( int * b, int n, int new_line ) {
     print_array_gen(b,n,type_int,new_line);
 }
 
-#if 0
-void print_array_bytes_old ( uint8_t * b, int n, int new_line ) {
-    int k;
-    if ( NULL==b || n<1 ) {
-        return;
-    }
-    printf("(%02x",b[0]);
-    for ( k=1; k<n; ++k ) {
-        printf(" %02x",b[k]);
-    }
-    printf(")");
-    for ( k=0; k<new_line; ++k ) {
-        printf("\n");
-    }
-    return;
-}
 
-void print_array_int_old ( int32_t * b, int n, int new_line ) {
-    int k;
-    if ( NULL==b || n<1 ) {
-        return;
-    }
-    printf("(%d",b[0]);
-    for ( k=1; k<n; ++k ) {
-        printf(" %d",b[k]);
-    }
-    printf(")");
-    for ( k=0; k<new_line; ++k ) {
-        printf("\n");
-    }
-    return;
-}
-#endif
+
+
+
+
+
+
