@@ -5,6 +5,8 @@
 #define MAX_CHARACTERS 1005
 #define MAX_PARAGRAPHS 5
 
+#define dprint(...) do { printf("[%d] ",__LINE__); printf(__VA_ARGS__); } while(0)
+
 struct word {
     char* data;
 };
@@ -23,6 +25,8 @@ struct document {
     struct paragraph* data;
     int paragraph_count;//denotes number of paragraphs in a document
 };
+
+/* Beginning of my code */
 
 int count_paragraphs ( char * text ) {
     int k, pcnt=0, slen = strlen(text);
@@ -147,6 +151,10 @@ struct document get_document(char* text) {
         while ( 1 ) {
             /* A return or end of text indicates the end of a paragraph */
             if ( '\n'==text[tidx] || tlen-1==tidx ) {
+                //dprint("para %d = %s\n",k,para);
+                if ( tlen-1==tidx ) {
+                    para[pidx++] = text[tidx];
+                }
                 get_paragraph(&ret.data[k],para);
                 tidx++; /* Make sure to skip the return character */
                 break;  /* Get the next sentence or processing finished */
@@ -174,8 +182,9 @@ struct sentence kth_sentence_in_mth_paragraph(struct document Doc, int k, int m)
 struct paragraph kth_paragraph(struct document Doc, int k) {
     struct paragraph ret = Doc.data[k-1];
     return ret;
-
 }
+
+/* End of my code */
 
 
 void print_word(struct word w) {
@@ -230,10 +239,12 @@ int main()
     char* text = get_input_text();
     struct document Doc = get_document(text);
 
+    /*
     printf("-------------------------\n");
     print_document(Doc);
     printf("\n");
     printf("-------------------------\n");
+     */ 
 
     int q;
     scanf("%d", &q);
