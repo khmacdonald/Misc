@@ -71,13 +71,76 @@ int count_sentences ( char * text ) {
 }
 
 int count_words ( char * text ) {
-    int wcnt = 0;
+    int k;
+    int wcnt = 0, slen = strlen(text);
 
-    return wcnt;
+    for ( k=0; k<slen; ++k ) {
+        if ( ' '==text[k] ) {
+            wcnt++;
+        }
+    }
+
+    return wcnt+1; /* There is no space after the last word */
+}
+
+void get_sentence ( struct sentence * sent, char * text ) {
+    int k;
+    int wcnt = count_words(text),
+        slen = strlen(text);
+    char word[1024];
+    char * new_word;
+    int widx, sidx=0;
+
+    /* Allocate memory for each word */
+    sent->data = calloc(wcnt,sizeof(struct word));
+    sent->word_count = wcnt;
+
+    /* Get each word in the sentence */
+    for ( k=0; k<wcnt; ++k ) {
+        memset(word,0,1024);    /* Zero the word */
+        widx=0;                 /* Start at the beginning of a word */
+        while ( sidx<slen ) {
+            if ( ' '==text[sidx] || '\0'==text[sidx+1] ) {
+                if ( '\0'==text[sidx+1] ) {
+                    word[widx++] = text[sidx];
+                }
+                /* Allocate each word */
+                sent->data[k].data= calloc(1,strlen(word)+1);
+                snprintf(sent->data[k].data,strlen(word)+1,"%s",word);
+                sidx++;
+                break;
+            }
+            word[widx++] = text[sidx];
+            sidx++;
+        }
+    }
 }
 
 void get_paragraph ( struct paragraph * para, char * text ) {
-    dbg_print("Paragraph = %s\n",text);
+    int k;                            /* Dummy */
+    int scnt = count_sentences(text); /* Get the number of sentences in paragraph */
+    char sent[1024];                  /* The current sentence */
+    int sidx, tidx=0;                 /* The sentence and text index */
+
+    /* Allocate the sentence data structures */
+    para->data = calloc(scnt,sizeof(struct sentence));
+    para->sentence_count = scnt;
+
+    /* Get the sentences */
+    for ( k=0; k<scnt; ++k ) {
+        memset(sent,0,1024); /* Zero out the sentence */
+        sidx = 0;            /* Start at the beginning of hte sentence */
+        while ( tidx<strlen(text) ) {
+            if ( '.'==text[tidx] ) {
+                get_sentence(&para->data[k],sent);
+                tidx++;
+                break;
+            }
+            sent[sidx++] = text[tidx];
+            tidx++;
+        }
+    }
+
     return;
 }
 
@@ -92,22 +155,21 @@ struct document get_document(char* text) {
     ret.paragraph_count = count_paragraphs(text);
 
     /* Allocate the number of paragraphs for the document */
-    ret.data = (struct paragraph*)calloc(2,sizeof(*(ret.data)));
+    ret.data = (struct paragraph*)calloc(2,sizeof(struct paragraph));
 
     /* Get the paragraphs */
-    for ( k=0; k<ret.paragraph_count; ++k ) {
-        memset(para,0,1024);
-        pidx=0;
+    for ( k=0; k<ret.paragraph_count && tidx<tlen; ++k ) {
+        memset(para,0,1024); /* Zero out the sentence */
+        pidx=0;              /* Start at the beginning of the sentence */
         while ( 1 ) {
             /* A return or end of text indicates the end of a paragraph */
             if ( '\n'==text[tidx] || tlen-1==tidx ) {
                 get_paragraph(&ret.data[k],para);
+                tidx++; /* Make sure to skip the return character */
+                break;  /* Get the next sentence or processing finished */
             }
-            para[pidx++] = text[tidx];
+            para[pidx++] = text[tidx]; /* Capture the next character of the sentence */
             tidx++;
-            if ( tlen==tidx ) {
-                break;
-            }
         }
     }
 
@@ -115,21 +177,26 @@ struct document get_document(char* text) {
 }
 
 struct word kth_word_in_mth_sentence_of_nth_paragraph (
-        struct document Doc, 
-        int k, 
-        int m, 
-        int n) {
-    struct word ret;
+        struct document Doc,    /* Document */
+        int k,                  /* Word */
+        int m,                  /* Sentence */
+        int n) {                /* Paragraph  */
+    struct word ret = Doc.data[n-1].data[m-1].data[k-1];
     return ret;
 }
 
-struct sentence kth_sentence_in_mth_paragraph(struct document Doc, int k, int m) { 
-    struct sentence ret;
+struct sentence kth_sentence_in_mth_paragraph(
+        struct document Doc,    /* Document */
+        int k,                  /* Sentence */
+        int m) {                /* Paragraph */
+    struct sentence ret = Doc.data[m-1].data[k-1];
     return ret;
 }
 
-struct paragraph kth_paragraph(struct document Doc, int k) {
-    struct paragraph ret;
+struct paragraph kth_paragraph(
+        struct document Doc,    /* Documnet */
+        int k) {                /* Paragraph */
+    struct paragraph ret = Doc.data[k-1];
     return ret;
 }
 
@@ -182,7 +249,6 @@ int main() {
 
     /* Get the number of paragraphs in the doc. */
     in_idx = atoi(ilines->line);
-    dbg_print("in_idx = %d\n",in_idx);
 
     /* Get the doc. */
     memset(doc,0,1024);
@@ -202,6 +268,20 @@ int main() {
     struct document Doc = get_document(doc); /* Process a document */
 
     printf("\n --------------- \n\n");
+    struct paragraph para = kth_paragraph(Doc, 2);
+    print_paragraph(para);
+    printf("\n");
+
+    struct sentence sen= kth_sentence_in_mth_paragraph(Doc, 1, 1);
+    print_sentence(sen);
+    printf("\n");
+
+    struct word w = kth_word_in_mth_sentence_of_nth_paragraph(Doc, 1, 1, 1);
+    print_word(w);
+    printf("\n");
+
+    printf("\n --------------- \n\n");
+#if 0
     /* Process queries */
     while ( 1 ) {
         cline = ilines->next;
@@ -212,6 +292,8 @@ int main() {
         dbg_print("%s",cline->line); /* Each line is a query */
         ilines = cline;
     }
+    printf("\n --------------- \n\n");
+#endif
 
     return 0;
 }
