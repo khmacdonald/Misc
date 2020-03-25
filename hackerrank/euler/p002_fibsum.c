@@ -35,7 +35,7 @@ void even_fib( int ac, char ** av ) {
 
     do { 
         if ( 0==(sum&1) ) {
-            tsum += sum;
+            tsum += sum; /* Sums all even fibonacci numbers */
         }
         sum = a0 + a1;
         a0 = a1;

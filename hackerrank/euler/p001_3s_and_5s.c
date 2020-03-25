@@ -36,22 +36,26 @@ int main () {
 long long sum_lim_mul ( long long mul, long long lim ) {
     int q, r, bsum, sum;
 
-    q = lim/mul;
+    q = lim/mul;        /* lim = q*mul + r */
     r = lim % mul;
-    if ( 0==r ) {
+    if ( 0==r ) {       /* Exclude lim in the sum */
         q--;
     }
-    bsum = q*(q+1)/2;
-    sum = bsum * mul;
+    bsum = q*(q+1)/2; /* = 1 + 2 + 3 + ... + q */
+    sum = bsum * mul; /* = mul + 2*mul + 3*mul + ... + q*mul */
 
     return sum;
 }
 
 long long sum_lim_fast ( long long lim ) {
-    long long s3 = sum_lim_mul( 3,lim);
-    long long s5 = sum_lim_mul( 5,lim);
-    long long s15= sum_lim_mul(15,lim);
+    long long s3 = sum_lim_mul( 3,lim); /* The sum of all multiples of 3 less than lim */
+    long long s5 = sum_lim_mul( 5,lim); /* The sum of all multiples of 5 less than lim */
+    long long s15= sum_lim_mul(15,lim); /* The sum of all multiples of 15 less than lim */
 
+    /*
+     * s3 includes all mulitples of 15, as does s5.  Therefore, 
+     * all mulitples of 15 are counted twice. 
+     */
     return s3 + s5 - s15;
 }
 
