@@ -78,16 +78,24 @@ pBINARY_NODE binary_tree_search ( pBINARY_NODE root, void * key ) {
 }
 
 /* ------------------------------------------------------- */
+/*
+ * Basic print binary tree function.  It is not pretty, but
+ * you can see how the tree is structured with a basic value
+ * type being 'int' type.
+ */
 
 #define GET_INT(P) *((int*)(P))
 #define MAX_LEVEL   128
 #define STRSZ       16
+
+/* Basic linked list */
 struct node_ll { 
     int parent, value;
     char str[STRSZ];
     struct node_ll * next;
 };
 
+/* Recursively find each element at a level */
 static void fill_ll ( 
         pBINARY_NODE node, 
         pBINARY_NODE parent, 
@@ -100,6 +108,8 @@ static void fill_ll (
     if ( NULL==node || level>=MAX_LEVEL ) {
         return;
     }
+
+    /* Create new element for the current level and node */
     new_ll = calloc(1,sizeof(*new_ll));
     new_ll->parent = GET_INT(parent->value);
     new_ll->value  = GET_INT(node->value);
@@ -108,6 +118,8 @@ static void fill_ll (
     } else {
         snprintf(new_ll->str,STRSZ,"Right");
     }
+
+    /* Add new element to the correct level */
     lvl = levels[level];
     if ( NULL==lvl ) {
         levels[level] = new_ll;
@@ -117,21 +129,28 @@ static void fill_ll (
         }
         lvl->next = new_ll;
     }
+
+    /* Recurse left then right */
     fill_ll(node->left,node,BT_LEFT,levels,level+1);
     fill_ll(node->right,node,BT_RIGHT,levels,level+1);
 
 }
 
 void binary_tree_print ( pBINARY_NODE root ) {
-    struct node_ll * levels[MAX_LEVEL];
+    struct node_ll * levels[MAX_LEVEL]; 
     int level = 0,k;
     struct node_ll * lvl;
     struct node_ll * nlvl;
 
+    /*
+     * levels is an array of linked list.  levels[k] is a linked
+     * list of each element of level k in the binary tree.
+     */
     memset(levels,0,MAX_LEVEL*sizeof(levels[0]));
     fill_ll(root->left,root,BT_LEFT,levels,0);
     fill_ll(root->right,root,BT_RIGHT,levels,0);
 
+    /* Print out */
     printf("    Root = %d\n",GET_INT(root->value));
     for ( k=0; k<MAX_LEVEL && NULL!=levels[k]; ++k ) {
         lvl = levels[k];

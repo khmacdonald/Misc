@@ -48,7 +48,7 @@ bt_child_t int_cmp ( void * a, void * b ) {
         //return BT_SAME;
     }
 
-    dbg_print("aa = %d, bb = %d, ret = %s\n",aa,bb,dbg_str);
+    //dbg_print("aa = %d, bb = %d, ret = %s\n",aa,bb,dbg_str);
 
     return ret;
 }
