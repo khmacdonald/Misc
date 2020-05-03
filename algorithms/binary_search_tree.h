@@ -19,9 +19,25 @@ struct binary_node {
 typedef struct binary_node    BINARY_NODE;
 typedef struct binary_node * pBINARY_NODE;
 
+
+/**
+ * Create a new node for a binary search tree and initialize it.
+ */
 pBINARY_NODE binary_tree_init ( void * key, void * value, bt_cmp_t cmp );
+
+/**
+ * Inserts a new node, if its value isn't already in the tree, as a leaf.
+ */
 int binary_tree_insert ( pBINARY_NODE root, void * key, void * value );
+
+/**
+ * Searches a tree by value.
+ */
 pBINARY_NODE binary_tree_search ( pBINARY_NODE root, void * key );
 
+/**
+ * Print a binary tree.
+ */
+void binary_tree_print ( pBINARY_NODE root );
 
 #endif
