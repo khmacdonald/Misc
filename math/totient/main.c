@@ -74,7 +74,7 @@ int32_t main_euler0070 ( int32_t argc, char * argv[] )
         }
     }
     printf("\n");
-    info_print("%u -> ration = %f\n",n_min,rmin);
+    info_print("%u -> ratio = %f\n",n_min,rmin);
 
     return 0;
 }
