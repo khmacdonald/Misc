@@ -113,7 +113,8 @@ khm_error_t complex_div ( complex_t div, complex_t a, complex_t b )
     }
 
     /* */
-
+    complex_inv(d,b);
+    complex_mul(div,a,d);
 
 END:
     return ret;

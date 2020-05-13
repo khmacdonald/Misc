@@ -86,7 +86,7 @@ khm_error_t complex_add ( complex_t sum, complex_t a, complex_t b );
 khm_error_t complex_mul ( complex_t mul, complex_t a, complex_t b );
 
 /*
- * Divide a and b and place result into mul.
+ * Divide a and b and place result into mul, d = a / b.
  */
 khm_error_t complex_div ( complex_t d, complex_t a, complex_t b );
 
