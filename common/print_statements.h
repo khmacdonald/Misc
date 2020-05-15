@@ -22,4 +22,11 @@
         exit(N); \
     } while(0)
 
+#define err_print_exit(N,...) \
+    do { \
+        err_print(__VA_ARGS__); \
+        printf("\n    Exiting...\n");\
+        exit(N); \
+    } while(0)
+
 #endif

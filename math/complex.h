@@ -44,11 +44,13 @@ void complex_copy ( complex_t a, complex_t b );
  * Print the complex number into file ofd.
  */
 void complex_print_file ( FILE * ofd, complex_t a );
+void complex_print_label_file ( FILE * ofd, complex_t a, char * lbl, int nline );
 
 /*
  * Print the complex number to the screen.
  */
 void complex_print ( complex_t a );
+void complex_print_label ( complex_t a, char * lbl, int nline );
 
 /*
  * Negate complex number of a and put it into n.
@@ -106,5 +108,14 @@ struct gauss_integer
 };
 
 typedef struct gauss_integer gauss_t[1];
+
+/*          UNIT TEST       */
+void unit_test_complex_print ( int32_t argc, char * argv[] ) ;
+void unit_test_complex_copy ( int32_t argc, char * argv[] ) ;
+void unit_test_complex_negate ( int32_t argc, char * argv[] ) ;
+void unit_test_complex_conjugate ( int32_t argc, char * argv[] ) ;
+void unit_test_complex_inverse ( int32_t argc, char * argv[] ) ;
+void unit_test_complex_modulus ( int32_t argc, char * argv[] ) ;
+
 
 #endif

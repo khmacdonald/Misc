@@ -71,6 +71,7 @@ int is_match ( char c1, char c2 ) {
 void test_case ( char * str ) {
     struct LL ll = {NULL};
     int k,slen = strlen(str);
+    int unbalanced = 0;
 
     printf("    **** Test ****\n\n");
     printf("Test string: \"%s\"\n",str);
@@ -82,16 +83,17 @@ void test_case ( char * str ) {
                 pop(&ll);
             } else {
                 //printf("\nUnbalanced (%d,%c)\n",k,str[k]);
+                unbalanced = 1;
                 goto END;
             }
         }
     }
 
 END:
-    if ( NULL==ll.root ) {
-        printf("    -> Balanced\n");
-    } else {
+    if ( NULL!=ll.root || unbalanced ) {
         printf("    -> Unbalanced\n");
+    } else {
+        printf("    -> Balanced\n");
     }
 
     printf("\n\n");

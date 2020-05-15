@@ -4,9 +4,9 @@ import bisect
 import math
 import sys
 
-sys.path.append("/Users/khmacdonald/code/SVN/trunk/euler/utilities/")
-from primes import sieve
-import my_euler
+#sys.path.append("/Users/khmacdonald/code/SVN/trunk/euler/utilities/")
+#from primes import sieve
+#import my_euler
 
 av = sys.argv
 ac = len(av)
@@ -35,16 +35,19 @@ def test():
 def proj():
     ans = 0
 
-    upper = 10**7
-    print("Starting")
+    #upper = 10**7
+    upper = 2**16
+    print("Starting, with upper %d" % upper)
     for n in range(2,upper):
-        sys.stdout.write("n = %d\r" % n)
+        #sys.stdout.write("n = %d\r" % n)
         x = n
         while True:
             x = sq_sum(x)
             if 1==x:
+                print("n = %d - 1" % n);
                 break
             if 89==x:
+                print("n = %d - 89" % n);
                 ans = ans + 1
                 break
 

@@ -4,6 +4,8 @@ CC=gcc
 
 OBJ=complex.o khm_common.o
 
+.PHONY:$(PROJ)
+
 $(PROJ): $(OBJ)
 	$(CC) -g -o $(PROJ) $(PROJ).c $(OBJ) $ $(CFLAGS)
 
