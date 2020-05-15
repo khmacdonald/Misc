@@ -1,6 +1,83 @@
 #include <string.h>
+#include <time.h>
 
 #include "ibt.h"
+
+#define MXLEVEL 32
+struct tlevel_node {
+    int parent, left, right;
+    struct tlevel_node * next;
+};
+typedef struct tlevel_node TLNODE;
+
+void print_tree_by_level_rec ( TLNODE ** levels, IBT_NODE * node, int level ) { 
+    TLNODE * tnode = NULL;
+
+    if ( NULL==node || level>=MXLEVEL ) {
+        return;
+    }
+    /* Create new level node */
+    tnode = calloc(1,sizeof(*tnode));
+    tnode->parent = node->val;
+    tnode->left = (node->lchild) ? node->lchild->val : -1;
+    tnode->right= (node->rchild) ? node->rchild->val : -1;
+
+    /* Add node to level list */
+    tnode->next = levels[level];
+    levels[level] = tnode;
+
+    /* Recurse */
+    print_tree_by_level_rec(levels,node->lchild,level+1); 
+    print_tree_by_level_rec(levels,node->rchild,level+1); 
+}
+
+void print_tnode ( TLNODE * tnode ) {
+    printf("[%3d: (",tnode->parent);
+    if ( -1==tnode->left ) {
+        printf("nil");
+    } else {
+        printf("%3d",tnode->left);
+    }
+    printf(",");
+    if ( -1==tnode->right ) {
+        printf("nil");
+    } else {
+        printf("%3d",tnode->right );
+    }
+    printf(") ");
+}
+
+void print_tree_by_level ( const char * label, IBT * tree ) {
+    TLNODE * levels[MXLEVEL] = {NULL};
+    TLNODE * tnode;
+    TLNODE * ntnode;
+    IBT_NODE * root = NULL;
+    int k;
+
+    printf("%s_ibt",label);
+    if ( NULL==tree || NULL==tree->root ) {
+        printf(" = NULL\n");
+        return;
+    }
+    root = tree->root;
+    print_tree_by_level_rec(levels,root,0); 
+
+    printf(" - Root : %d\n",root->val);
+    for ( k=0; k<MXLEVEL; ++k ) {
+        if ( NULL==levels[k] ) {
+            break;
+        }
+        tnode = levels[k];
+        printf("Level %d: ",k);
+        while ( tnode ) {
+            ntnode = tnode->next;
+            print_tnode(tnode);
+            free(tnode);
+            tnode = ntnode;
+        }
+        printf("\n");
+    }
+}
 
 static void print_tree_rec ( IBT_NODE * node, int level ) {
     if ( NULL==node ) {
@@ -157,3 +234,36 @@ void ibt_test_add_node ( void ) {
     print_tree(__FUNCTION__,&tree);
     destroy_tree(&tree,0);
 }
+
+void ibt_test_random_tree ( int ac, char ** av ) {
+    IBT tree = { NULL } ;
+    int rnd, k, n=10;
+
+    if ( 1<ac ) {
+        n = atoi(av[1]);
+    }
+
+    srand(time(NULL));
+
+    for ( k=0; k<n; ++k ) {
+        rnd = ((rand() & 0x7fffffff) % 100);
+        ibt_add_node(&tree,rnd);
+    }
+
+    print_tree(__FUNCTION__,&tree);
+    printf("\n\n");
+    print_tree_by_level(__FUNCTION__,&tree);
+    destroy_tree(&tree,0);
+
+}
+
+
+
+
+
+
+
+
+
+
+
