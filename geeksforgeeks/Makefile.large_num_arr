@@ -1,0 +1,17 @@
+PROJ=large_num_arr
+
+CC=gcc
+
+OBJ=../common/common.o ../math/brand.o
+
+#CFLAGS=-I /Users/khmacdonald/code/common  -lm
+#CFLAGS=-I /Users/khmacdonald/code/common  
+
+.PHONY:$(PROJ)
+
+$(PROJ): $(OBJ)
+	$(CC) -g -o $(PROJ) $(PROJ).c $(OBJ) $ $(CFLAGS)
+
+clean: 
+	rm $(PROJ) $(OBJ)
+
