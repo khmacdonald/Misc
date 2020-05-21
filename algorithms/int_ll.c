@@ -22,7 +22,7 @@ void print_isll ( const char * label, ISLL * ll ) {
     printf("\n");
 }
 
-void destroy_isll ( ISLL * ll ) {
+void destroy_isll ( ISLL * ll, int free_ll ) {
     ISLL_NODE * node = NULL;
     ISLL_NODE * nnode = NULL;
 
@@ -33,8 +33,10 @@ void destroy_isll ( ISLL * ll ) {
 
     /* Get root node and free the list data structure */
     node = ll->root;
-    free(ll);
-    ll = NULL;
+    if ( free_ll ) {
+        free(ll);
+        ll = NULL;
+    }
 
     /* Free each non-NULL node */
     while ( node ) {
@@ -82,7 +84,7 @@ ISLL * create_simple_isll ( int n ) {
      */
     for ( k=n; k>0; --k ) {
         if ( push_isll(ll,k) ) {
-            destroy_isll(ll);
+            destroy_isll(ll,1);
             return NULL;
         }
     }
@@ -105,7 +107,7 @@ ISLL * create_random_isll ( int n ) {
         /* Create a random value less than 1000 and push it onto the list */
         rnd = (rand() & 0x7fffffff) % 1000;
         if ( push_isll(ll,rnd) ) {
-            destroy_isll(ll);
+            destroy_isll(ll,1);
             return NULL;
         }
     }
@@ -235,7 +237,7 @@ void print_idll ( const char * label, IDLL * ll ) {
     printf(" ->\n");
 }
 
-void destroy_idll ( IDLL * ll ) {
+void destroy_idll ( IDLL * ll, int free_ill ) {
     IDLL_NODE * root = NULL;
     IDLL_NODE * cnode = NULL;
     IDLL_NODE * nnode = NULL;
@@ -245,7 +247,9 @@ void destroy_idll ( IDLL * ll ) {
     }
     root = ll->root;
     cnode = ll->root;
-    free(ll);
+    if ( free_ill ) {
+        free(ll);
+    }
     while ( 1 ) { 
         nnode = cnode->flink;
         free(cnode);
@@ -267,7 +271,7 @@ IDLL * create_simple_idll ( int n ) {
 
     for ( k=n; k>0; --k ) {
         if ( push_idll(ll,k) ) {
-            destroy_idll(ll);
+            destroy_idll(ll,1);
             return NULL;
         }
     }
@@ -290,7 +294,7 @@ IDLL * create_random_idll ( int n ) {
         /* Create a random value less than 1000 and push it onto the list */
         rnd = (rand() & 0x7fffffff) % 1000;
         if ( push_idll(ll,rnd) ) {
-            destroy_idll(ll);
+            destroy_idll(ll,1);
             return NULL;
         }
     }
@@ -354,3 +358,180 @@ int push_idll ( IDLL * ll, int n ) {
 
     return 0;
 }
+
+int rotate_idll ( IDLL * ll, int n ) {
+    IDLL_NODE * node = NULL;
+    int cnt=0;
+
+    if ( NULL==ll || NULL==ll->root ) {
+        return 1;
+    }
+
+    node = ll->root;
+    for ( cnt=0; cnt<n; ++cnt ) {
+        node = node->flink;
+    }
+
+    ll->root = node;
+
+    return 0;
+}
+
+/* ----------------------------------------------------------------- */
+/*                            UNIT TESTS                             */
+void unit_test_simple_create ( int argc, char ** argv ) { 
+    ISLL * ll = NULL;
+    int n = 5;
+
+    if ( 1<argc ) {
+        n = atoi(argv[1]);
+    }
+
+    ll = create_simple_isll(n); 
+    print_isll(__FUNCTION__,ll);
+    destroy_isll(ll,1);
+}
+
+void unit_test_random_create ( int argc, char ** argv ) {
+    ISLL * ll = NULL;
+    int n = 5;
+
+    if ( 1<argc ) {
+        n = atoi(argv[1]);
+    }
+
+    ll = create_random_isll(n);
+    print_isll(__FUNCTION__,ll);
+    destroy_isll(ll,1);
+}
+
+void unit_test_insert_after ( int argc, char ** argv ) {
+    int n = 5, val = 8, cmp = 2;
+    ISLL * ll = create_simple_isll(n);
+
+    if ( NULL==ll ) {
+        err_print("List creation failure\n");
+        exit(1);
+    }
+
+    print_isll(__FUNCTION__,ll);
+    if ( isll_insert_after(ll,val,cmp) ) {
+        err_print("Insertion failure\n");
+        exit(1);
+    }
+    print_isll(__FUNCTION__,ll);
+    destroy_isll(ll,1);
+}
+
+void unit_test_insert_before ( int argc, char ** argv ) {
+    int n = 5, val = 8, cmp = 2;
+    ISLL * ll = create_simple_isll(n);
+
+    if ( NULL==ll ) {
+        err_print("List creation failure\n");
+        exit(1);
+    }
+
+    print_isll(__FUNCTION__,ll);
+    if ( isll_insert_before(ll,val,cmp) ) {
+        err_print("Insertion failure\n");
+        exit(1);
+    }
+    print_isll(__FUNCTION__,ll);
+    destroy_isll(ll,1);
+}
+
+/* ------------------------------------------------------- */
+
+void unit_test_double_print ( void ) {
+    IDLL ll = { NULL };
+    IDLL_NODE n1 = { 1, NULL, NULL } ;
+    IDLL_NODE n2 = { 2, NULL, NULL } ;
+    IDLL_NODE n3 = { 3, NULL, NULL } ;
+    IDLL_NODE n4 = { 4, NULL, NULL } ;
+    IDLL_NODE n5 = { 5, NULL, NULL } ;
+
+    ll.root = &n1;
+
+    n1.blink = &n5;
+    n1.flink = &n2;
+
+    n2.blink = &n1;
+    n2.flink = &n3;
+
+    n3.blink = &n2;
+    n3.flink = &n4;
+
+    n4.blink = &n3;
+    n4.flink = &n5;
+
+    n5.blink = &n4;
+    n5.flink = &n1;
+
+    print_idll(__FUNCTION__,&ll);
+}
+
+void unit_test_double_push ( void ) {
+    IDLL * ll = calloc(1,sizeof(*ll));
+    
+    push_idll(ll,5);
+    push_idll(ll,4);
+    push_idll(ll,3);
+    push_idll(ll,2);
+    push_idll(ll,1);
+
+    print_idll(__FUNCTION__,ll);
+    destroy_idll(ll,1);
+}
+
+void unit_test_double_create ( void ) {
+    IDLL * ll = NULL;
+    int n = 5;
+
+    ll = create_simple_idll(n); 
+    print_idll(__FUNCTION__,ll);
+    destroy_idll(ll,1);
+}
+
+void unit_test_double_create_random ( void ) {
+    IDLL * ll = NULL;
+    int n = 5;
+
+    ll = create_random_idll(n); 
+    print_idll(__FUNCTION__,ll);
+    destroy_idll(ll,1);
+}
+
+void unit_test_double_rotate ( void ) {
+    IDLL * ll = NULL;
+    int n = 8;
+
+    ll = create_simple_idll(n); 
+    print_idll(__FUNCTION__,ll);
+    rotate_idll(ll,4); 
+    print_idll("Rotated_by_4",ll);
+    destroy_idll(ll,1);
+
+    printf("\n\n");
+
+    ll = calloc(1,sizeof(*ll));
+    push_idll(ll,9);
+    push_idll(ll,8);
+    push_idll(ll,7);
+    push_idll(ll,4);
+    push_idll(ll,2);
+    print_idll(__FUNCTION__,ll);
+    rotate_idll(ll,3); 
+    print_idll("Rotated_by_4",ll);
+    destroy_idll(ll,1);
+
+}
+
+
+
+
+
+
+
+
+

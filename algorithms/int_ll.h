@@ -26,7 +26,7 @@ ISLL * create_simple_isll ( int n ) ;
 ISLL * create_random_isll ( int n ) ;
 
 /* Destroys all allocated memory associated with the linked list. */
-void destroy_isll ( ISLL * ll ) ;
+void destroy_isll ( ISLL * ll, int free_ll ) ;
 
 /* Prints the linked list. */
 void print_isll ( const char * label, ISLL * ll ) ;
@@ -59,7 +59,7 @@ struct _idll {
 typedef struct _idll IDLL;
 
 /* Deallocates all dynamically allocated memory */
-void destroy_idll ( IDLL * ll ) ;
+void destroy_idll ( IDLL * ll, int free_ill ) ;
 
 /* Prints the linked list. */
 void print_idll ( const char * label, IDLL * ll ) ;
@@ -75,6 +75,23 @@ IDLL_NODE * pop_idll ( IDLL * ll ) ;
 
 /* Push a value onto a list */
 int push_idll ( IDLL * ll, int n ) ;
+
+/* Rotate a linked list by n places */
+int rotate_idll ( IDLL * ll, int n );
+
+/* ----------------------------------------------------------------- */
+/*                            UNIT TESTS                             */
+void unit_test_simple_create ( int argc, char ** argv ) ;
+void unit_test_random_create ( int argc, char ** argv ) ;
+void unit_test_insert_after ( int argc, char ** argv ) ;
+void unit_test_insert_before ( int argc, char ** argv ) ;
+
+void unit_test_double_print ( void ) ;
+void unit_test_double_push ( void ) ;
+void unit_test_double_create ( void ) ;
+void unit_test_double_create_random ( void ) ;
+
+void unit_test_double_rotate ( void ) ;
 
 
 

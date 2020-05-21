@@ -19,6 +19,7 @@ typedef struct ibt IBT;
 
 void print_tree ( const char * label, IBT * tree ) ;
 void print_tree_by_level ( const char * label, IBT * tree ) ;
+void print_tree_sorted  ( const char * label, IBT * tree, int ascending ) ;
 void destroy_tree ( IBT * tree, int free_tree ) ;
 
 /*
@@ -35,6 +36,7 @@ int ibt_random_tree ( IBT * tree, int n ) ;
 void ibt_test_print_tree ( void ) ;
 void ibt_test_add_node ( void ) ;
 void ibt_test_random_tree ( int ac, char ** av ) ;
+void ibt_test_print_sorted ( int ac, char ** av ) ;
 
 
 #endif

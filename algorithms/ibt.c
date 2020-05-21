@@ -3,6 +3,8 @@
 
 #include "ibt.h"
 
+#include "../common/print_statements.h"
+
 #define MXLEVEL 32
 struct tlevel_node {
     int parent, left, right;
@@ -119,6 +121,38 @@ void print_tree ( const char * label, IBT * tree ) {
     return;
 }
 
+void print_tree_sorted_rec  ( IBT_NODE * node, int ascending ) {
+    if ( NULL==node ) {
+        return;
+    }
+
+    if ( ascending ) {
+        print_tree_sorted_rec(node->lchild,ascending);
+    } else {
+        print_tree_sorted_rec(node->rchild,ascending);
+    }
+    printf(" %d",node->val);
+    if ( ascending ) {
+        print_tree_sorted_rec(node->rchild,ascending);
+    } else {
+        print_tree_sorted_rec(node->lchild,ascending);
+    }
+}
+
+void print_tree_sorted  ( const char * label, IBT * tree, int ascending ) {
+    IBT_NODE * node;
+
+    printf("%s_sorted_tree = ",label);
+    if ( NULL==tree || NULL==tree->root ) {
+        printf("nil");
+    }
+    node = tree->root;
+
+    print_tree_sorted_rec(node,ascending);
+
+    printf("\n");
+}
+
 void destroy_tree_rec ( IBT_NODE * node ) {
     if ( NULL==node ) {
         return;
@@ -179,11 +213,24 @@ int ibt_add_node ( IBT * tree, int n ) {
 }
 
 int ibt_random_tree ( IBT * tree, int n ) {
+    int k, rnd, ret = 0;
+
     if ( NULL==tree ) {
         return 1;
     }
 
-    return 0;
+    srand(time(NULL));
+
+    for ( k=0; k<n; ++k ) {
+        rnd = ((rand() & 0x7fffffff) % 100);
+        ret = ibt_add_node(tree,rnd);
+        if ( ret ) {
+            destroy_tree(tree,0);
+            break;
+        }
+    }
+
+    return ret;
 }
 
 
@@ -237,24 +284,44 @@ void ibt_test_add_node ( void ) {
 
 void ibt_test_random_tree ( int ac, char ** av ) {
     IBT tree = { NULL } ;
-    int rnd, k, n=10;
+    int rnd, k, n=10,ret;
 
     if ( 1<ac ) {
         n = atoi(av[1]);
     }
 
-    srand(time(NULL));
-
-    for ( k=0; k<n; ++k ) {
-        rnd = ((rand() & 0x7fffffff) % 100);
-        ibt_add_node(&tree,rnd);
+    printf("Building random tree with %d nodes.\n",n);
+    ret = ibt_random_tree(&tree,n);
+    if ( ret ) {
+        printf("Error: could not create random tree.\n");
+        return;
     }
 
     print_tree(__FUNCTION__,&tree);
     printf("\n\n");
     print_tree_by_level(__FUNCTION__,&tree);
     destroy_tree(&tree,0);
+}
 
+void ibt_test_print_sorted ( int ac, char ** av ) {
+    IBT tree = { NULL } ;
+    int rnd, k, n=10, ret;
+
+    if ( 1<ac ) {
+        n = atoi(av[1]);
+    }
+
+    printf("Building random tree with %d nodes.\n",n);
+    ret = ibt_random_tree(&tree,n);
+    if ( ret ) {
+        printf("Error: could not create random tree.\n");
+        return;
+    }
+
+    print_tree_sorted("Ascending",&tree,1);
+    printf("\n\n");
+    print_tree_sorted("Descending",&tree,0);
+    destroy_tree(&tree,0);
 }
 
 
