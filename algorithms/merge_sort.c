@@ -6,6 +6,7 @@ gcc merge_sort.c -o merge_sort ../math/brand.o
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #include "../math/brand.h"
 #include "../common/print_statements.h"
@@ -17,6 +18,7 @@ gcc merge_sort.c -o merge_sort ../math/brand.o
  int level = 0;
 
 void merge_sort ( int * arr, int n );
+void merge_sort_01 ( int * arr, int n );
 void print_int_array ( int * arr, int n, int new_line );
 void rnd_arr ( int * arr, int n );
 
@@ -36,7 +38,8 @@ int main ( int argc, char ** argv ) {
     printf("\n");
     print_int_array(arr,n,1);
     printf("    Sorted:\n");
-    merge_sort(arr,n);
+    //merge_sort(arr,n);
+    merge_sort_01(arr,n);
     print_int_array(arr,n,1);
 
     free(arr);
@@ -49,14 +52,12 @@ int main ( int argc, char ** argv ) {
 void rnd_arr ( int * arr, int n ) {
     int k;
     int mod = 1000;
-    brand_t ctx;
+    int rnd;
 
-    brand_seed_init(ctx);               /* Seed and initialize randomizer */
-    //brand_init(ctx,0xbadbeef);        /* Initialize with a fixed seed */
-    brand_array((uint32_t*)arr,n,ctx);  /* Get random integer array */
+    srand(time(NULL));
 
     for ( k=0; k<n; ++k ) {
-        arr[k] &= 0x7fffffff;       /* Ensure positive numbers */
+        arr[k] = rand() & 0x7fffffff;       /* Ensure positive numbers */
         arr[k] = arr[k] % mod;      /* Modulo numbers */
     }
 
@@ -116,7 +117,7 @@ void merge_sort_base ( int * arr, int n ) {
 }
 
 int * copy_part_of_array ( int * arr, int n ) {
-    int * narr = calloc1(n,sizeof(*narr));
+    int * narr = calloc(n,sizeof(*narr));
     memcpy(narr,arr,n*sizeof(narr));
     return narr;
 }
@@ -135,10 +136,10 @@ void merge_sort ( int * arr, int n ) {
 
     /* Divide and conquor */
     ln = n/2;
-    hn = n-ln
+    hn = n-ln;
 
     low  = copy_part_of_array(arr,ln);
-    high = copy_part_of_array(arr+half,hn);
+    high = copy_part_of_array(arr+ln,hn);
 
     merge_sort(low,ln);             /* Sort low half of array */
     merge_sort(high,hn);            /* Sort high half of array */
@@ -149,5 +150,88 @@ void merge_sort ( int * arr, int n ) {
 
 END:
     level--;
+    return;
+}
+
+void base_case_01 ( int * a, int n ) {
+    int tmp;
+
+    /* Do base cases */
+    if ( 2==n ) {
+        if ( a[0] > a[1] ) {
+            tmp = a[0];
+            a[0] = a[1];
+            a[1] = tmp;
+            return;
+        }
+    }
+}
+
+void merge_01 ( int * arr, int n, int ln ) {
+    int * tarr = calloc(n,sizeof(*tarr));
+    int hn = n-ln;
+    int k, lidx = 0, hidx = 0;
+    int * lo = arr;
+    int * hi = arr + ln;
+
+    if ( NULL==tarr ) {
+        printf("[%d] Error: Could not allocate temporary array\n",__LINE__);
+        printf("            for merge.  Exiting .... \n");
+        exit(1);
+    }
+
+    /* Merge the halves */
+    for ( k=0; k<n && lidx<ln && hidx<hn; ++k ) {
+        if ( lo[lidx] < hi[hidx] ) {
+            tarr[k] = lo[lidx++];
+        } else {
+            tarr[k] = hi[hidx++];
+        }
+    }
+
+    /* 
+     * There can be some left over in the lower or upper half, but
+     * not both
+     */
+    if ( lidx<ln ) {  /* Copy remaining lower half */
+        for ( ; k<n && lidx<ln; ++k ) {
+            tarr[k] = lo[lidx++];
+        }
+    } else if ( hidx<hn ) {  /* Copy remaining upper half */
+        for ( ; k<n && hidx<hn; ++k ) {
+            tarr[k] = hi[hidx++];
+        }
+    }
+
+    /* Copy sorted temp array to original array */
+    memcpy(arr,tarr,n*sizeof(tarr[0]));
+    free(tarr);
+
+    return;
+}
+
+void merge_sort_01 ( int * arr, int n ) {
+    int half, ln, hn, tmp;
+
+    level++;
+
+    if ( NULL==arr || n<1 ) {
+        return;
+    }
+
+    if ( n<3 ) {
+        base_case_01(arr,n);
+        return;
+    }
+
+    ln = n/2;   /* Divide and conquer */
+    hn = n-ln;
+
+    merge_sort_01(arr,ln);      /* Sort lower half */
+    merge_sort_01(arr+ln,hn);   /* Sort upper half */
+    merge_01(arr,n,ln);         /* Merge the halves */
+
+    level--;
+
     return;
 }
