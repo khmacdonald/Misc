@@ -1,0 +1,10 @@
+# First line is the number of nodes.  
+10
+1 2
+1 3
+3 8
+8 9
+4 5
+5 10
+10 6
+6 7

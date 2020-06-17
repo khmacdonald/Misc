@@ -1,0 +1,14 @@
+# First line is the number of nodes.  The second line is the 
+# number of edges.  The remaining lines defines the edges.
+10
+10
+1 2
+2 3
+3 4
+4 5
+5 1
+6 7
+7 8
+8 9
+9 6
+10 10
