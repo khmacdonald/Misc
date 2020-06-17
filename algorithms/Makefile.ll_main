@@ -6,6 +6,8 @@ OBJ=linked_lists.o
 
 CFLAGS=
 
+.PHONY:$(PROJ)
+
 $(PROJ): $(OBJ)
 	$(CC) -g -o $(PROJ) $(PROJ).c $(OBJ) $ $(CFLAGS)
 

@@ -35,7 +35,6 @@ int main ( int argc, char ** argv ) {
     gn = n;
     info_print("%sOriginal - ",adj);
     q_print_sort(arr,n,1);
-    //printf("\n");
 
     quick_sort(arr,0,n-1);
 
@@ -81,6 +80,10 @@ void quick_sort ( int * arr, int lo, int hi ) {
 int partition ( int * arr, int lo, int hi ) {
     int pivot = arr[hi],low = arr[lo], high = arr[hi];
     int k = lo,m;
+
+    printf("[%d] level = %d, lo = %d, hi = %d, pivot = %d: ",__LINE__,level,lo,hi,pivot);
+    q_print_sort(arr+lo,hi-lo,1);
+
     for ( m=lo; m<hi; ++m ) {
         if ( arr[m] < pivot ) {
             swap(arr,m,k);
@@ -90,6 +93,7 @@ int partition ( int * arr, int lo, int hi ) {
     //info_print("Lvl = %2d, Pvt: %4d  (%3d,%3d)- ",level,pivot,low,high);
     //q_print_sort(garr,gn,1);
     swap(arr,m,k);
+
     return k;
 }
 

@@ -6,7 +6,7 @@ OBJ=../math/brand.o
 
 CFLAGS=
 
-.PHONY=$(PROJ)
+.PHONY:$(PROJ)
 
 $(PROJ): $(OBJ)
 	$(CC) -g -o $(PROJ) $(PROJ).c $(OBJ) $ $(CFLAGS)
