@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../../common/print_statements.h" /* Formatted print wrappers */
-#include "utils/queue.h"
+#include "print_statements.h" /* Formatted print wrappers */
+#include "queue.h"
 
 #include "ch05_graphs.h"
 
@@ -128,14 +128,16 @@ static edge_t edge_classification ( graph * g, int v, int y ) {
     if ( discovered[y] && !processed[y] ) {
         return (BACK);
     }
-    if ( processed[y] && (entry_time[y] > entry_type[v]) ) {
+    if ( processed[y] && (entry_time[y] > entry_time[v]) ) {
         return FORWARD;
     }
-    if ( processed[y] && (entry_time[y] > entry_type[v]) ) {
-        return FORWARD;
+    if ( processed[y] && (entry_time[y] < entry_time[v]) ) {
+        return CROSS;
     }
 
     err_print("self_loop (%d,%d)\n",v,y);
+    
+    return INVALID;
 }
 
 /* ------------------------------------------------------------------------ */
@@ -246,11 +248,45 @@ void process_vertex_early_dfs ( int v ) {
     reachable_ancestor[v] = v;
 }
 
-void process_vertex_late ( int v ) {
-    /* TODO */
+typedef void (*pv_late_t)(int);
+void process_vertex_late_void ( int v ) {
     //printf("%s: %d\n",__FUNCTION__,v);
 }
 
+void process_vertex_late_dfs ( int v ) {
+    bool root;      /* is the vertex the root of the DFS tree? */
+    int time_v;     /* earliest reachable time for v */
+    int time_parent;/* earliest reachable time for parent[v] */
+
+    if ( parent[v]<1 ) {    /* test if v is the root */
+        if ( tree_out_degree[v] > 1 ) {
+            printf("root articulation vertex: %d\n",v);
+        }
+        return;
+    }
+
+    root = (parent[parent[v]]<1);   /* test if parent[v] is root */
+
+    if ( !root ) {
+        if ( reachable_ancestor[v] == parent[v] ) {
+            printf("parent articulartion vertex: %d\n",parent[v]);
+        }
+        if ( reachable_ancestor[v] == v ) {
+            printf("bridge articulation vertex: %d\n",parent[v]);
+
+            if ( tree_out_degree[v] > 0 ) { /* test if v is not a leaf */
+                printf("bridge articulation vertex: %d\n",v);
+            }
+        }
+    } /* if ( !root ) */
+
+    time_v = entry_time[reachable_ancestor[v]];
+    time_parent = entry_time[reachable_ancestor[parent[v]]];
+
+    if ( time_v < time_parent ) {
+        reachable_ancestor[parent[v]] = reachable_ancestor[v];
+    }
+}
 
 void process_edge_two_color ( int v, int y ) {
     /* For two color functionality */
@@ -273,11 +309,14 @@ void process_edge_dfs ( graph * g, int v, int y ) {
 }
 void process_edge_dfs_art_vert ( graph * g, int v, int y ) {
     /* For finding articulation vertices */
-    int class;      /* edge class */
+    edge_t class;      /* edge class */
 
-    class = edge_classification(v,y);
+    class = edge_classification(g,v,y);     /* Get edge classification */
 
-    if ( TRUE==class ) {
+    /*
+     * Update reachable_ancestor 
+     */
+    if ( TREE==class ) {
         tree_out_degree[v]++;
     }
     if ( (BACK==class) && (parent[v]!=y) ) {
@@ -309,6 +348,7 @@ int breadth_first_search ( graph * g, int start ) {
     int v;          /* current vertex */
     int y;          /* successor vertex */
     edgenode * p;   /* temporary pointer */
+    pv_late_t process_vertex_late = process_vertex_late_void;
 
     initialize_search(g);              /* Initialize helper arrays */
     init_queue(&q);                 /* Initialize queue */
@@ -413,6 +453,7 @@ void two_color ( graph * g ) {
 int depth_first_search ( graph * g, int v ) {
     edgenode * p;       /* tmp pointer */
     int y;              /* successor node */
+    pv_late_t process_vertex_late = process_vertex_late_dfs;
 
     if (finished) {
         return 0;         /* allow for search termination */
@@ -422,16 +463,18 @@ int depth_first_search ( graph * g, int v ) {
     time = time+1;              /* Increment time */
     entry_time[v] = time;       /* Note entry time */
 
-    process_vertex_early(v);    /* Process node */
+    process_vertex_early_dfs(v);    /* Process node */
 
     for ( p=g->edges[v]; p; p=p->next ) {
         y = p->y;                       /* Get node */
         if ( FALSE==discovered[y] ) {   /* Undiscovered node */
             parent[y] = v;              /* Save parent of node */
-            process_edge_dfs(g,v,y);          /* Process edge */
+            //process_edge_dfs(g,v,y);          /* Process edge */
+            process_edge_dfs_art_vert(g,v,y);
             depth_first_search(g,y);    /* Recursion */
         } else if ( (!processed[y] && (parent[v]!=y)) || (g->directed) ) {
-            process_edge_dfs(g,v,y);
+            //process_edge_dfs(g,v,y);
+            process_edge_dfs_art_vert(g,v,y);
         }
 
         if ( finished ) {

@@ -1,10 +1,13 @@
 PROJ=algos_main
 
+MY_COMMON=../../../common
+ALGOS_COMMON=../common
+
 CC=gcc
 
-OBJ=ch05_graphs.o utils/queue.o algos_common.o
+OBJ=ch05_graphs.o ../common/queue.o algos_common.o
 
-CFLAGS=-g -I . -I ./utils/
+CFLAGS=-g -I . -I $(ALGOS_COMMON) -I $(MY_COMMON)
 
 .PHONY:$(PROJ)
 

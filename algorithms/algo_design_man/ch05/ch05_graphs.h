@@ -6,7 +6,7 @@
 #define MAXV        1000        /* Max number of veticies */
 
 typedef enum { UNCOLORED, WHITE, BLACK, RED, YELLOW, BLUE, LAST_COLOR } color_t;
-typedef enum { TREE=0, BACK, CROSS, FORWARD } edge_t;
+typedef enum { TREE=0, BACK, CROSS, FORWARD, INVALID } edge_t;
 
 struct _edgenode { 
     int y;                      /* Adjacency info */
