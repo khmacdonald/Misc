@@ -1,10 +1,12 @@
-PROJ=stack_queue_main
+PROJ=main
+
+COMMON=../../common
 
 CC=gcc
 
-OBJ=stack_queue.o
+OBJ=linked_list.o
 
-CFLAGS=
+CFLAGS=-I $(COMMON)
 
 .PHONY:$(PROJ)
 

@@ -1,7 +1,7 @@
 #ifndef ALGOS_QUEUE_H
 #define ALGOS_QUEUE_H
 
-#include "../algos_common.h"
+#include "algos_common.h"
 
 #define QUEUESIZE   1000
 

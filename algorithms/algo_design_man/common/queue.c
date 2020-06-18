@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../../common/print_statements.h" /* Formatted print wrappers */
+#include "print_statements.h" /* Formatted print wrappers */
 
 #include "queue.h"
 
