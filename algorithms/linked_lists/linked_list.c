@@ -71,7 +71,7 @@ LNODE * ll_create_node (
 /**
  * @brief Prints a linked list.
  */
-void ll_print ( 
+void gen_base_print ( 
         const char * type,      /**< Type of linked list */
         const char * label,     /**< Label of linked list */
         LLIST * list,           /**< Linked list */
@@ -99,6 +99,14 @@ void ll_print (
     }
 
     print_return_lines(rline);
+}
+
+void ll_print (
+        const char * label,     /**< Label of linked list */
+        LLIST * list,           /**< Linked list */
+        print_data_t pdata,     /**< Print data */
+        int rline ) {           /**<  Number of return lines to print */
+    gen_base_print("linked_list",label,list,pdata,rline);
 }
 
 /**
@@ -366,7 +374,7 @@ void ll_unit_test_print_generic ( void ) {
     L.count = 5;
 
     printf("\n[%d] ",__LINE__);
-    ll_print("linked_list",__FUNCTION__,&L,NULL,1);
+    ll_print(__FUNCTION__,&L,NULL,1);
 }
 
 void ll_unit_test_push ( void ) {
@@ -380,7 +388,7 @@ void ll_unit_test_push ( void ) {
     }
 
     printf("\n[%d] ",__LINE__);
-    ll_print("linked_list",__FUNCTION__,&L,NULL,1);
+    ll_print(__FUNCTION__,&L,NULL,1);
 
     ll_clean(&L,NULL);
 }
@@ -397,11 +405,11 @@ void ll_unit_test_pop_head ( void ) {
     }
 
     printf("\n[%d] ",__LINE__);
-    ll_print("linked_list",__FUNCTION__,&L,NULL,1);
+    ll_print(__FUNCTION__,&L,NULL,1);
     node = ll_node_pop_head(&L); 
     printf("Popped node value = %d\n",node->val);
     free(node);
-    ll_print("popped_linked_list",__FUNCTION__,&L,NULL,1);
+    ll_print(__FUNCTION__,&L,NULL,1);
 
     ll_clean(&L,NULL);
 }
@@ -418,11 +426,11 @@ void ll_unit_test_pop_tail ( void ) {
     }
 
     printf("\n[%d] ",__LINE__);
-    ll_print("linked_list",__FUNCTION__,&L,NULL,1);
+    ll_print(__FUNCTION__,&L,NULL,1);
     node = ll_node_pop_tail(&L); 
     printf("Popped node value = %d\n",node->val);
     free(node);
-    ll_print("popped_linked_list",__FUNCTION__,&L,NULL,1);
+    ll_print(__FUNCTION__,&L,NULL,1);
 
     ll_clean(&L,NULL);
 }
@@ -439,18 +447,18 @@ void ll_unit_test_remove_node ( void ) {
     }
 
     printf("\n[%d] ",__LINE__);
-    ll_print("linked_list",__FUNCTION__,&L,NULL,2);
+    ll_print(__FUNCTION__,&L,NULL,2);
 
     printf("Removing node 8\n");
     node = ll_node_pop_by_val(&L,8); 
     ll_print_node(node,NULL);
-    ll_print("new_linked_list",__FUNCTION__,&L,NULL,2);
+    ll_print(__FUNCTION__,&L,NULL,2);
     free(node);
 
     printf("Removing node 10\n");
     node = ll_node_pop_by_val(&L,10); 
     ll_print_node(node,NULL);
-    ll_print("new_linked_list",__FUNCTION__,&L,NULL,1);
+    ll_print(__FUNCTION__,&L,NULL,1);
     free(node);
 
     ll_clean(&L,NULL);
@@ -467,15 +475,15 @@ void ll_unit_test_insert_after ( void ) {
         ll_push(&L,NULL,2*k);
     }
 
-    ll_print("linked_list",__FUNCTION__,&L,NULL,2);
+    ll_print(__FUNCTION__,&L,NULL,2);
 
     printf("Insert value 5 after value 4.\n");
     ll_insert_after(&L,4,NULL,5); /* Insert 5 after 4 */
-    ll_print("after_insert",__FUNCTION__,&L,NULL,2);
+    ll_print(__FUNCTION__,&L,NULL,2);
 
     printf("Insert value 7 after value 7 (7 isn't in the list).\n");
     ll_insert_after(&L,7,NULL,7); /* Insert 7 after 7 */
-    ll_print("after_2nd_insert",__FUNCTION__,&L,NULL,1);
+    ll_print(__FUNCTION__,&L,NULL,1);
 
     ll_clean(&L,NULL);
 }
@@ -495,7 +503,7 @@ void ll_unit_test_create_list ( void ) {
 
     printf("[%d]    *** %s ***\n",__LINE__,__FUNCTION__);
 
-    ll_print("linked_list",__FUNCTION__,list,print_data,1);
+    ll_print(__FUNCTION__,list,print_data,1);
 
     ll_clean(list,NULL);
     free(list);
@@ -516,7 +524,7 @@ void ll_unit_test_print_data ( void ) {
     for ( k=4; k>0; k-- ) {
         ll_push(&L,data[k-1],k);
     }
-    ll_print("linked_list",__FUNCTION__,&L,print_data,1);
+    ll_print(__FUNCTION__,&L,print_data,1);
 
     ll_clean(&L,NULL);
 }

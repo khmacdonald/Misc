@@ -1,5 +1,5 @@
-#ifndef STACK_QUEUE_H
-#define STACK_QUEUE_H
+#ifndef LINKED_LIST_H
+#define LINKED_LIST_H
 
 #include <stdio.h>
 
@@ -33,8 +33,10 @@ struct _base {
 typedef struct _node LNODE; /* Linked list node */
 typedef struct _base LLIST; /* Linked list data structure */
 
-void ll_print ( const char*, const char*, LLIST*, print_data_t, int ) ;
-void ll_print_node ( LNODE*, print_data_t );
+void gen_base_print ( const char*, const char*, LLIST*, print_data_t, int ) ;
+
+void ll_print ( const char*, LLIST*, print_data_t, int ) ;
+void ll_print_node ( LNODE*, print_data_t ) ;
 int ll_set_node ( LNODE*, LNODE*, LNODE*, void*, int ) ;
 LNODE * ll_create_node ( LNODE*, LNODE*, void*, int ) ;
 
