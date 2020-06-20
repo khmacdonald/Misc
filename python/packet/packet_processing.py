@@ -1,11 +1,28 @@
 #!/usr/local/bin/python3.7
 
+import array
 import datetime
-from dateutil.relativedelta import relativedelta
 import os
 import struct
 import sys
 import time
+
+
+def ip_checksum ( arr ) :
+    ''' Computes IP checksum on bytes in arr '''
+    if len(arr) & 1 : 
+        res = sum(array.array("H",arr[:-1]))
+        res += struct.unpack("B",arr[-1:])
+    else :
+        res = sum(array.array("H",arr))
+    while res > 0xffff :
+        res = (res>>16) + (res & 0xffff)
+    
+    res = (~res) & 0xffff
+    if res==0 : 
+        return True
+    return False
+
 
 class Protocol ( object ) :
     def __init__ ( self, start, length, id_str, proc=None ) :
@@ -13,6 +30,7 @@ class Protocol ( object ) :
         self.length = length 
         self.id_str = id_str
         self.proc   = proc
+        
 
 class Packet ( object ) :
     '''
@@ -32,10 +50,25 @@ class Packet ( object ) :
 
         self.cloc       = 0             # The current byte in the pacekt
         self.stack      = []            # Empty protocol stack
+        self.err_msg    = 'success'
 
     def __process_ip4 ( self ) :
         ''' Processes the IPv4 protocol header '''
-        print("    IPv4")
+        prot_len    = 20
+        ipv4 = self.packet[self.cloc:self.cloc+prot_len]
+        vihl = struct.unpack("!B",ipv4[:1])[0]
+        ver     = (vihl>>4) & 0x0f
+        hLen    = (vihl & 0x0f) * 4
+        if hLen!=prot_len : 
+            print(f"Expected a header length of {prot_len}, but have {hLen}")
+            self.err_msg = f"Expected header length {prot_len} != {hLen}"
+            return False
+        if not ip_checksum(ipv4) :
+            self.err_msg = "IPv4 header checksum failure"
+            return False
+
+        prot_id     = Protocol(self.cloc,prot_len,'ipv4')
+        self.stack.append(prot_id)
 
     def __process_ethernet ( self ) :
         ''' Processes the ethernet header '''
@@ -50,7 +83,9 @@ class Packet ( object ) :
         # Adjust current processing location 
         self.cloc += prot_len
         if 0x0800==nprot : 
-            self.__process_ip4()
+            return self.__process_ip4()
+
+    # -----------------------------------------------------------------------
 
     def print_packet_header ( self, hdate = False, fmt="%Y-%m-%d_%H:%M:%S" ) :
         ''' Print the meta data of the packet '''
@@ -68,10 +103,16 @@ class Packet ( object ) :
         if self.trunc :
             printf(f"    Actual length : {self.wlen}")
 
+    def print_protocol_stack ( self ) :
+        ''' Creates a string detailing the protocol stack '''
+        stk = ''.join(['%s:' % p.id_str for p in self.stack])
+        stack = stk[:-1]
+        return stack
+
     def process ( self ) :
         ''' Process the protocol stack of a packet. '''
         if 1==self.network : 
-            self.__process_ethernet()
+            return self.__process_ethernet()
 
     # End Packet class
 
@@ -213,6 +254,9 @@ def test_main ( ) :
         packet = pfile.get_next_packet()    # Read next packet
         if packet :
             packet.process()                    # Process the protocol stack
+            stack = packet.print_protocol_stack() 
+            print(f"Packet {packet.number} protocol stack is '{stack}'")
+        break
     print(f"There are {pfile.pkt_num} packets in file.")
 
 
