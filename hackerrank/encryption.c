@@ -40,19 +40,14 @@ char* encryption(char* s) {
         row++;
     }
 
-    printf("[%d] slen = %d, row = %d, col = %d\n",
-            __LINE__,slen,row,col);
     enc = calloc((row+1)*(row+1),sizeof(*enc));
     for ( k=0; k<col; ++k ) {
-        printf("[%d] %c:",__LINE__,s[k]);
         for ( m=0; m<row && k+m*col<slen; ++m ) {
             idx = k+m*col;
             if ( idx < slen ) {
-                printf(" -> %c (%d)",s[idx],idx);
                 enc[eidx++] = s[idx];
             }
         }
-        printf("\n");
         enc[eidx++] = ' ';
     }
     enc[strlen(enc)-1] = '\0';
@@ -92,8 +87,6 @@ void test03 ( ) {
 }
 
 int main ( ) {
-    test02();
-    /*
     printf("\n------------------------------------------\n");
     test01();
     printf("------------------------------------------\n");
@@ -101,7 +94,6 @@ int main ( ) {
     printf("------------------------------------------\n");
     test03();
     printf("------------------------------------------\n\n");
-    */
     return 0;
 }
 
