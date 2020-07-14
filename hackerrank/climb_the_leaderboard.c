@@ -80,20 +80,23 @@ int * climbingLeaderboard(
 
     *result_count = alice_count;
 
+    /* Sort Alices scores, but maintain the original order */
     set_rank(rank,scores,scores_count);
 
+    /* Check Alices sorted scores against the sorted scoreboard */
     for ( k=0, n=0; k<alice_count; ++k ) {
         while ( n<scores_count ) {
             val = oloc[k].val;
             loc = oloc[k].loc;
-            if ( val >= scores[n] ) {
-                res[loc] = rank[n];
+            if ( val >= scores[n] ) { /* Check Alices score againt the score board */
+                res[loc] = rank[n]; /* Put the score in the right order */
                 break;
             }
-            n++;
+            n++; /* Check next score */
         }
+        /* All remaing scores are lower than the scoreboard */
         if ( !res[loc] ) {
-            res[loc] = rank[scores_count-1]+1;
+            res[loc] = rank[scores_count-1]+1; /* Put the score in the right order */
         }
     }
 
@@ -226,22 +229,21 @@ void test_random ( int argc, char ** argv ) {
 }
 
 void test01 ( void ) {
-    int scores[6] = { 100, 90, 90, 80, 75, 60 };
-    int scnt = 6;
-    int alice[5] = { 50, 65, 77, 90, 102 };
-    int acnt = 5;
-    int expected[5] = { 6, 5, 4, 2, 1 };
+    const int scnt = 6;
+    int scores[scnt] = { 100, 90, 90, 80, 75, 60 };
+    const int acnt = 5;
+    int alice[acnt] = { 50, 65, 77, 90, 102 };
+    int expected[acnt] = { 6, 5, 4, 2, 1 };
 
     test_base_new(scores,scnt,alice,acnt,expected);
 }
 
 void test02 ( void ) {
-    int scores[7] = { 100, 100, 50, 40, 40, 20, 10 };
-    int scnt = 7;
-    int alice[4] = { 5, 25, 50, 120 };
-    int acnt = 4;
-    int expected[4] = { 6, 4, 2, 1 };
-    int rcount;
+    const int scnt = 7;
+    int scores[scnt] = { 100, 100, 50, 40, 40, 20, 10 };
+    const int acnt = 4;
+    int alice[acnt] = { 5, 25, 50, 120 };
+    int expected[acnt] = { 6, 4, 2, 1 };
 
     test_base_new(scores,scnt,alice,acnt,expected);
 }

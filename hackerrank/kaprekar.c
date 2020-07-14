@@ -7,7 +7,7 @@
  */
 
 void kaprekarNumbers ( int p, int q ) {
-    int k, sqr, n1, n2, div, sum;
+    unsigned long long int k, sqr, n1, n2, div, sum;
     int found = 0;
 
     for ( k=p; k<=q; k++ ) {
@@ -25,7 +25,8 @@ void kaprekarNumbers ( int p, int q ) {
             sum = n2+n1;
             if ( (n1!=k) && (n2!=k) && k==sum ) {
                 //printf("%d ",k);
-                printf("%4d^2 = %9d, %4d + %4d = %4d\n",k,sqr,n1,n2,sum);
+                printf("%4llu^2 = %9llu, %4llu + %4llu = %4llu\n",
+                        k,sqr,n1,n2,sum);
                 found = 1;
                 break;
             }
