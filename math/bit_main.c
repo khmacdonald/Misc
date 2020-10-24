@@ -1,3 +1,5 @@
+#include <ctype.h>
+#include <inttypes.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,11 +10,43 @@
 int32_t test02 ( int32_t ac, char * av[] );
 int32_t test03 ( int32_t ac, char * av[] );
 int32_t test04 ( int32_t ac, char * av[] );
+void test_leading_zero ( int32_t ac, char *av[] ) ;
 
 int32_t main ( int32_t argc, char * argv[] )
 {
-    test04(argc,argv);
+    test_leading_zero(argc,argv);
+
     return 0;
+}
+
+void test_leading_zero ( int32_t ac, char *av[] ) {
+    uint64_t n = (1L<<59) | (1L<<48) | (1L<<32) | (1L<<25) | 0xbeef;
+    uint64_t one = 1;
+    int32_t leading = 0;
+    uint64_t new;
+    int base = 10;
+
+    if ( 1<ac ) {
+        if ( !isdigit(av[1][0]) ) {
+            printf("Prints a number and the number of leading zeros.\n");
+            printf("And the largest power of 2 less than the number.\n");
+            printf("Usage: %s [optional <number>]\n",av[1]);
+            return;
+        }
+        if ( '0'==av[1][0] && 'x'==av[1][1] ) {
+            base = 16;
+        }
+        n = strtoll(av[1],NULL,base);
+    }
+
+
+    leading = leading_zeros(n); 
+    new = 1L<<(63-leading);
+    printf("    Leading zeros: %d\n",leading);
+    printf("n   = %lld\n",n);
+    printf("n   = 0x%016llx\n",n);
+    printf("new = 0x%016llx\n",new);
+
 }
 
 int32_t test04 ( int32_t ac, char * av[] )

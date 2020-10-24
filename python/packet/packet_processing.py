@@ -7,6 +7,12 @@ import struct
 import sys
 import time
 
+def create_ip4_pseudo_header ( ipv4, rem_length ) :
+    addrs    = ipv4[12:20]
+    protocol = ipv4[9:10]
+    length   = struct.pack("!H",rem_length)
+    pseudo_header = addrs + b'\x00' + protocol + length
+    return pseudo_header 
 
 def ip_checksum ( arr ) :
     ''' Computes IP checksum on bytes in arr '''
@@ -19,9 +25,7 @@ def ip_checksum ( arr ) :
         res = (res>>16) + (res & 0xffff)
     
     res = (~res) & 0xffff
-    if res==0 : 
-        return True
-    return False
+    return res
 
 
 class Protocol ( object ) :
@@ -52,6 +56,22 @@ class Packet ( object ) :
         self.stack      = []            # Empty protocol stack
         self.err_msg    = 'success'
 
+    def __process_tcp ( self ) :
+        ip = self.stack[-1]
+        ip_hdr = self.packet[ip.start:ip.start+ip.length]
+        if 'ipv4' == ip.id_str :
+            tcp_length = len(self.packet[self.cloc:])
+            pseudo_header = create_ip4_pseudo_header(ip_hdr,tcp_length) 
+        tcp_data = self.packet[self.cloc:]
+        data = pseudo_header + tcp_data
+        print(tcp_data[:8])
+        check = ip_checksum(data) 
+        if check : 
+            print(f"TCP checksum fail ({check:04X})")
+            #return False
+                
+        sys.exit(1)
+        
     def __process_ip4 ( self ) :
         ''' Processes the IPv4 protocol header '''
         prot_len    = 20
@@ -63,12 +83,25 @@ class Packet ( object ) :
             print(f"Expected a header length of {prot_len}, but have {hLen}")
             self.err_msg = f"Expected header length {prot_len} != {hLen}"
             return False
-        if not ip_checksum(ipv4) :
+        check = ip_checksum(ipv4) 
+        if check :
             self.err_msg = "IPv4 header checksum failure"
             return False
 
         prot_id     = Protocol(self.cloc,prot_len,'ipv4')
         self.stack.append(prot_id)
+        
+        # Adjust current processing location 
+        self.cloc += prot_len
+        protocol = struct.unpack("B",ipv4[9:10])[0]
+        if 1==protocol :
+            print(f"IP next protocol is {protocol} - ICMP")
+        elif 6==protocol :
+            self.__process_tcp()
+        elif 17==protocol :
+            print(f"IP next protocol is {protocol} - UDP")
+        else : 
+            print(f"IP next protocol is {protocol} - not processed")
 
     def __process_ethernet ( self ) :
         ''' Processes the ethernet header '''

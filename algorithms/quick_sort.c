@@ -20,8 +20,19 @@ void swap ( int * arr, int n, int m );
 
 void q_print_sort ( int * b, int n, int nl );
 
+int main_old ( int argc, char ** argv ) ;
+
+
+void qsort_test ( ) ;
+
 /* ------------------------------------------------------------------------ */
 int main ( int argc, char ** argv ) {
+    qsort_test();
+    return 0;
+}
+
+/* ------------------------------------------------------------------------ */
+int main_old ( int argc, char ** argv ) {
     int n = 10;
     int * arr = NULL;
     char * adj = "                    ";
@@ -45,6 +56,21 @@ int main ( int argc, char ** argv ) {
 
     return 0;
 }
+/* ------------------------------------------------------------------------ */
+
+int icmp ( const void * aa, const void * bb ) {
+    return (int)(*((int*)aa)) - (int)(*((int*)bb));
+}
+
+void qsort_test ( ) {
+    int arr[6] = { 5, 4, 4, 2, 2, 8 };
+    int len = 6;
+
+    c_print_array_int(arr,len,2);
+    qsort(arr,len,sizeof(arr[0]),icmp);
+    c_print_array_int(arr,len,2);
+}
+
 /* ------------------------------------------------------------------------ */
 
 int * rnd_array ( int n ) {

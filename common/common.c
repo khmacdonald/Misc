@@ -4,7 +4,12 @@
 
 #include "common.h"
 
-int * c_random_array ( int n, int positive, int mod ) {
+/**
+ * @brief Creates an array of n random integers modulo some number.
+ */
+int * c_random_array ( int n,           /**< The length of the array. */
+                       int positive,    /**< Force the integer to be positive */
+                       int mod ) {      /**< Compute modulus */
     int * arr = calloc(n,sizeof(*arr));
     int k, rnd;
 
@@ -12,10 +17,10 @@ int * c_random_array ( int n, int positive, int mod ) {
 
     for ( k=0; k<n; ++k ) {
         if ( positive ) {
-            rnd = rand() & 0x7fffffff;
+            rnd = rand() & 0x7fffffff; /* Get rid of the negative sign */
         }
         if ( mod ) {
-            rnd = rnd % mod;
+            rnd = rnd % mod;    /* Compute modulus */
         }
         arr[k] = rnd;
     }
@@ -23,9 +28,55 @@ int * c_random_array ( int n, int positive, int mod ) {
     return arr;
 }
 
+/**
+ * @brief Creates an array of n random bytes.
+ */
+uint8_t * c_random_byte_array ( int n ) {   /**< The number of bytes */
+    uint8_t * arr = calloc(1,sizeof(*arr));
+    uint8_t * b = arr;
+    uint32_t rnd;
+
+    srand(time(NULL));
+
+    while ( n>=4 ) {    /* compute four bytes at a time */
+        rnd = (uint32_t)rand();
+        b[0] = (uint8_t)((rnd & 0xff));
+        b[1] = (uint8_t)((rnd>>8) & 0xff);
+        b[2] = (uint8_t)((rnd>>16) & 0xff);
+        b[3] = (uint8_t)((rnd>>24) & 0xff);
+        b += 4;
+        n -= 4;
+    }
+    if ( n ) {   /* Handle the remainder */
+        rnd = rand();
+        switch(n) {
+            case 1:
+                b[0] = (uint8_t)((rnd & 0xff));
+                break;
+            case 2:
+                b[0] = (uint8_t)((rnd & 0xff));
+                b[1] = (uint8_t)((rnd>>8) & 0xff);
+                break;
+            case 3:
+                b[0] = (uint8_t)((rnd & 0xff));
+                b[1] = (uint8_t)((rnd>>8) & 0xff);
+                b[2] = (uint8_t)((rnd>>16) & 0xff);
+                break;
+        }
+    }
+
+    return arr;
+}
+
+/**< Define a type value */
 typedef enum { type_byte, type_int } type_t;
 
-static void print_type ( void * b, int idx, type_t type ) {
+/**
+ * @brief A generic function to wrap to print types.
+ */
+static void print_type ( void * b,              /**< Pointer to array */
+                         int idx,               /**< Index into array */
+                         type_t type ) {        /**< Type of array */
     switch(type) {
         case type_byte:
             printf("%02x",((uint8_t*)b)[idx]);
@@ -37,37 +88,82 @@ static void print_type ( void * b, int idx, type_t type ) {
     return;
 }
 
-static void print_array_gen ( void * b, int n, type_t type, int new_line) {
+/**
+ * @brief A generic function to wrap to print arrays. 
+ */
+static void print_array_gen ( void * b,         /**< The pointer to the array */
+                              int n,            /**< The length of the array */
+                              type_t type,      /**< The type of array */
+                              int new_line) {   /**< The number of new lines to print */
     int k;
 
     printf("(");
-    print_type(b,0,type);
+    print_type(b,0,type);       /* Handle type print */
     for ( k=1; k<n; ++k ) {
         printf(", ");
-        print_type(b,k,type);
+        print_type(b,k,type);   /* Handle type print */
     }
     printf(")");
+
+    /* Print the requested number of return lines */
     for ( k=0; k<new_line;++k ) {
         printf("\n");
     }
 }
 
-void c_print_array_bytes ( uint8_t * b, int n, int new_line ) {
+/**
+ * @brief Print an array of bytes 
+ */
+void c_print_array_bytes ( uint8_t * b,         /**< The pointer to the array */
+                           int n,               /**< The length of the array */
+                           int new_line ) {     /**< The number of return lines to print */
     print_array_gen(b,n,type_byte,new_line);
 }
 
-void c_print_array_int ( int * b, int n, int new_line ) {
+/**
+ * @brief Print an array of bytes 
+ */
+void c_print_array_int ( int * b,               /**< The pointer to the array */
+                         int n,                 /**< The length of the array */
+                         int new_line ) {       /**< The number of return lines to print */
     print_array_gen(b,n,type_int,new_line);
 }
 
-void c_print_array_int_lbl ( char * label, int * b, int n, int new_line ) {
+/**
+ * @brief Print an array with a label.
+ */
+void c_print_array_int_lbl ( char * label,      /**< The array label */
+                             int * b,           /**< The pointer to the array */
+                             int n,             /**< The length of the array */
+                             int new_line ) {   /**< The number of return lines to print */
     if ( NULL!=label ) {
         printf("%s = ",label);
     }
     c_print_array_int(b,n,new_line);
 }
 
-void c_print_formated_integer ( FILE * fd, int x ) {
+/**
+ * @brief Revrse the bytes of an array.
+ */
+void c_reverse_bytes ( uint8_t * b,     /**< The pointer to the array */
+                       int n ) {        /**< The length of the array */
+    int half = n/2;
+    int k;
+    uint8_t tmp;
+
+    for ( k=0; k<half; ++k ) {
+        /* Swap opposite pairs */
+        tmp = b[k];
+        b[k] = b[n-1-k];
+        b[n-1-k] = tmp;
+    }
+}
+
+/**
+ * @brief Prints commas for an integer to a stream.
+ */
+void c_print_formated_integer ( FILE * fd,   /**< The stream to print to */
+                                int x ) {    /**< The number to print */
     int d[4];
     int idx=0;
 
@@ -97,6 +193,10 @@ void c_unit_test_array_int ( int argc, char ** argv ) {
 }
 
 void c_unit_test_array_int_lbl ( int argc, char ** argv ) {
+}
+
+void c_unit_test_reverse_bytes ( int argc, char ** argv ) {
+
 }
 
 void c_unit_test_print_formated_integer ( int argc, char ** argv ) {

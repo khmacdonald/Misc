@@ -7,6 +7,8 @@ OBJ=bit_twiddle.o
 
 CFLAGS=-I /Users/khmacdonald/code/common  -lm
 
+.PHONY: $(PROJ)
+
 $(PROJ): $(OBJ)
 	$(CC) -g -o $(PROJ) $(PROJ).c $(OBJ) $ $(CFLAGS)
 
