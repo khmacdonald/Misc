@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 
 #include "common.h"
+#include "print_statements.h"
 
 /**
  * @brief Creates an array of n random integers modulo some number.
@@ -16,8 +18,9 @@ int * c_random_array ( int n,           /**< The length of the array. */
     srand(time(NULL));
 
     for ( k=0; k<n; ++k ) {
+        rnd = rand();
         if ( positive ) {
-            rnd = rand() & 0x7fffffff; /* Get rid of the negative sign */
+            rnd = rnd & 0x7fffffff; /* Get rid of the negative sign */
         }
         if ( mod ) {
             rnd = rnd % mod;    /* Compute modulus */
@@ -35,34 +38,22 @@ uint8_t * c_random_byte_array ( int n ) {   /**< The number of bytes */
     uint8_t * arr = calloc(1,sizeof(*arr));
     uint8_t * b = arr;
     uint32_t rnd;
+    static int seeded = 0;
 
-    srand(time(NULL));
+    if (!seeded) {
+        seeded = 1;
+        srand(time(NULL));
+    }
 
     while ( n>=4 ) {    /* compute four bytes at a time */
         rnd = (uint32_t)rand();
-        b[0] = (uint8_t)((rnd & 0xff));
-        b[1] = (uint8_t)((rnd>>8) & 0xff);
-        b[2] = (uint8_t)((rnd>>16) & 0xff);
-        b[3] = (uint8_t)((rnd>>24) & 0xff);
+        memcpy(b,&rnd,4);
         b += 4;
         n -= 4;
     }
     if ( n ) {   /* Handle the remainder */
         rnd = rand();
-        switch(n) {
-            case 1:
-                b[0] = (uint8_t)((rnd & 0xff));
-                break;
-            case 2:
-                b[0] = (uint8_t)((rnd & 0xff));
-                b[1] = (uint8_t)((rnd>>8) & 0xff);
-                break;
-            case 3:
-                b[0] = (uint8_t)((rnd & 0xff));
-                b[1] = (uint8_t)((rnd>>8) & 0xff);
-                b[2] = (uint8_t)((rnd>>16) & 0xff);
-                break;
-        }
+        memcpy(b,&rnd,n);
     }
 
     return arr;
@@ -183,10 +174,53 @@ void c_print_formated_integer ( FILE * fd,   /**< The stream to print to */
 
 
 /* Unit tests */
-void c_unit_test_random_array ( int argc, char ** argv ) {
+#define print_test printf(" *** %s ***\n",__FUNCTION__); 
+void c_unit_test_random_array ( void ) {
+    const int n = 3;
+    int * rnd = NULL;
+    int size[n] = {1, 4, 9};
+    int mod[n] = {100, 256, 53452};
+    int k, p = 0, start, end;
+
+    print_test;
+
+    start = 0;
+    end = n;
+    for ( k=start; k<end; ++k ) {
+        rnd = c_random_array(size[k], p, mod[k]); 
+        if ( NULL == rnd ) {
+            dbg_print("rnd = NULL\n");
+        } else {
+            dbg_print("Size = %d, p = %d, Modulus = %d\n",size[k], p, mod[k]);
+            c_print_array_int(rnd, size[k], 2);
+        }
+
+        SET_FREE(rnd);
+        p ^= 1;
+    }
 }
 
-void c_unit_test_array_bytes ( int argc, char ** argv ) {
+void c_unit_test_array_bytes ( void ) {
+    const int n = 3;
+    uint8_t * rnd = NULL;
+    int size[n] = {1, 4, 9};
+    int k, start, end;
+
+    print_test;
+
+    start = 0;
+    end = n;
+    for ( k=start; k<end; ++k ) {
+        rnd = c_random_byte_array(size[k]);
+        if ( NULL == rnd ) {
+            dbg_print("rnd = NULL\n");
+        } else {
+            dbg_print("Size = %d\n",size[k]);
+            c_print_array_bytes(rnd, size[k], 2);
+        }
+
+        SET_FREE(rnd);
+    }
 }
 
 void c_unit_test_array_int ( int argc, char ** argv ) {

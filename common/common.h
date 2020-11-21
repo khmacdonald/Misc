@@ -2,6 +2,11 @@
 #define MY_COMMON_H
 
 #include <stdint.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+#define SET_FREE(X) if ( X ) { free(X); (X) = NULL; }
+#define FCLOSE(X) if ( X ) { fclose(X); (X) = NULL; }
 
 int * c_random_array ( int n, int positive, int mod ) ;
 uint8_t * c_random_byte_array ( int n ) ;
@@ -15,9 +20,9 @@ void c_reverse_bytes ( uint8_t * b, int n ) ;
 void c_print_formated_integer ( FILE * fd, int x ) ;
 
 /* Unit tests */
-void c_unit_test_random_array ( int argc, char ** argv ) ; 
+void c_unit_test_random_array ( void ) ;
 
-void c_unit_test_array_bytes ( int argc, char ** argv ) ; 
+void c_unit_test_array_bytes ( void ) ;
 void c_unit_test_array_int ( int argc, char ** argv ) ; 
 void c_unit_test_array_int_lbl ( int argc, char ** argv ) ; 
 

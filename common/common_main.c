@@ -3,8 +3,7 @@
 #include "common.h"
 
 int main ( int argc, char ** argv ) {
-
-    c_unit_test_print_formated_integer(argc,argv);
-
+    // c_unit_test_random_array();
+    c_unit_test_array_bytes();
     return 0;
 }
