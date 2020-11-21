@@ -9,6 +9,7 @@ int main ( int argc, char ** argv ) {
     printf("%d\n",ans);
 }
 
+/* Finds the first unique element in a sorted integer array */
 int unique_element ( int * arr, int n ) {
     int k;
     if ( 1==n ) {
